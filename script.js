@@ -71,8 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
         retina_detect: true
     });
 
-    // --- 4. 打字机效果 ---
-    function typeWriter(elementId, text, speed = 100) {
+    // --- 4. 打字机效果 (优化版) ---
+    function typeWriter(elementId, text, speed = 100, callback) {
         const element = document.getElementById(elementId);
         element.innerHTML = '';
         let i = 0;
@@ -81,6 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 element.innerHTML += text.charAt(i);
                 i++;
                 setTimeout(type, speed);
+            } else {
+                // 打字完成后，执行回调函数
+                if (callback) callback();
             }
         }
         type();
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, observerOptions);
     timelineItems.forEach(item => { observer.observe(item); });
 
-    // --- 7. 爱心雨彩蛋 ---
+    // --- 7. 爱心雨彩蛋 (优化版) ---
     function createHeart() {
         const heart = document.createElement('div');
         heart.classList.add('heart');
@@ -124,7 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => heart.remove(), 5000);
     }
 
-    // --- 8. 信件解锁 ---
+    // 新增：开始爱心雨效果的函数
+    function startHeartsRain() {
+        // 每300毫秒创建一个爱心
+        const heartInterval = setInterval(createHeart, 300);
+        // 3秒后停止创建爱心
+        setTimeout(() => {
+            clearInterval(heartInterval);
+        }, 3000);
+    }
+
+    // --- 8. 信件解锁 (节奏优化版) ---
     window.checkBirthday = function() {
         const input = document.getElementById('birthdayInput').value;
         const herBirthday = "2003-01-04"; // 请替换成她的生日
@@ -141,16 +154,16 @@ document.addEventListener('DOMContentLoaded', () => {
 我爱你，不止三千遍。
 
 永远爱你的，
-[大强]`; // 请替换成你的名字
+[你的名字]`; // 请替换成你的名字
 
         if (input === herBirthday) {
             document.getElementById('unlockForm').style.display = 'none';
             document.getElementById('letterContent').style.display = 'block';
-            typeWriter('letter-text', letterText, 30);
-            // 触发爱心雨
-            for(let i = 0; i < 15; i++) {
-                setTimeout(createHeart, i * 200);
-            }
+            
+            // 调整打字速度，并在打字结束后触发爱心雨
+            const typingSpeed = 50; // 舒适的阅读速度
+            typeWriter('letter-text', letterText, typingSpeed, startHeartsRain);
+
         } else {
             alert("哎呀，好像不对哦，再想想看？😉");
         }

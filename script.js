@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function enableAudio() {
         // 检查是否真的需要取消静音，防止重复操作
         if (bgMusic.muted) {
+            // 新增：动态设置音乐源，实现按需加载
+            if (!bgMusic.src) {
+                bgMusic.src = bgMusic.getAttribute('data-src');
+            }
+            
             bgMusic.muted = false;
             bgMusic.play().then(() => {
                 console.log("音频已通过用户交互成功启动！");
@@ -52,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. 粒子背景配置 ---
+    // --- 3. 粒子背景配置 (优化性能) ---
     particlesJS('particles-js', {
         particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
+            number: { value: 50, density: { enable: true, value_area: 800 } }, // 80 -> 50
             color: { value: "#ffffff" },
             shape: { type: "circle" },
             opacity: { value: 0.5, random: true },
@@ -144,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 我爱你，不止三千遍。
 
 永远爱你的，
-[大强]`; // 请替换成你的名字
+大强`; // 请替换成你的名字
 
         if (input === herBirthday) {
             document.getElementById('unlockForm').style.display = 'none';

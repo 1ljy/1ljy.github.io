@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>致我最爱的你 | 三周年快乐</title>
+
+    <!-- 新增：预加载关键资源 -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="./fonts/DancingScript-Bold.ttf" as="font" type="font/ttf" crossorigin>
+
     <link rel="stylesheet" href="style.css">
     <!-- 加载本地字体 -->
     <style>
@@ -12,6 +18,7 @@
             font-style: normal;
             font-weight: 700;
             src: local('Dancing Script Bold'), local('DancingScript-Bold'), url('./fonts/DancingScript-Bold.ttf') format('truetype');
+            font-display: swap; /* 新增：优化字体加载 */
         }
     </style>
 </head>
@@ -26,10 +33,8 @@
     <!-- 3. 爱心雨容器 -->
     <div id="hearts-rain"></div>
 
-    <!-- 4. 背景音乐 (关键修改：添加 autoplay 和 muted) -->
-    <audio id="bgMusic" autoplay muted loop>
-        <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
-    </audio>
+    <!-- 4. 背景音乐 (优化：改为按需加载) -->
+    <audio id="bgMusic" autoplay muted loop data-src="music/xiaoxingyun.mp3"></audio>
 
     <!-- 5. 导航栏 -->
     <header>
@@ -57,7 +62,7 @@
                         <h3>初识 · 一切开始的地方</h3>
                         <p class="date">2021年8月8日</p>
                         <div class="photo-wrapper">
-                            <img src="images/photo1.jpg" alt="第一次见面" onclick="openPhotoViewer('images/photo1.jpg')">
+                            <img src="images/photo1.jpg" alt="第一次见面" loading="lazy" onclick="openPhotoViewer('images/photo1.jpg')">
                         </div>
                         <p>世界很大，幸好遇见。那天，夏风漫过窗棂时，隔着距离，听见你的声音。没有画面，却记了很久。</p>
                     </div>
@@ -70,7 +75,7 @@
                         <h3>心动 · 第一次约会</h3>
                         <p class="date">2022年7月7日</p>
                         <div class="photo-wrapper">
-                            <img src="images/photo2.jpg" alt="第一次约会" onclick="openPhotoViewer('images/photo2.jpg')">
+                            <img src="images/photo2.jpg" alt="第一次约会" loading="lazy" onclick="openPhotoViewer('images/photo2.jpg')">
                         </div>
                         <p>笨拙的对话，藏不住的心跳。原来电影里的情节，真的会发生在自己身上。</p>
                     </div>
@@ -83,7 +88,7 @@
                         <h3>同行 · 第一次旅行</h3>
                         <p class="date">2023年1月17日</p>
                         <div class="photo-wrapper">
-                            <img src="images/photo3.jpg" alt="第一次旅行" onclick="openPhotoViewer('images/photo3.jpg')">
+                            <img src="images/photo3.jpg" alt="第一次旅行" loading="lazy" onclick="openPhotoViewer('images/photo3.jpg')">
                         </div>
                         <p>和你一起看的风景，才叫风景。山海辽阔，都不及你眼里的星河。</p>
                     </div>

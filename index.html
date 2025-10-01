@@ -3,82 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一封会动的情书</title>
+    <title>致我最爱的你 | 三周年快乐</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- 背景音乐 -->
+    <!-- 1. 动态星空背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 2. 鼠标跟随光晕 -->
+    <div class="cursor-glow"></div>
+
+    <!-- 3. 爱心雨容器 -->
+    <div id="hearts-rain"></div>
+
+    <!-- 4. 背景音乐 -->
     <audio id="bgMusic" loop>
         <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 封面页 (启动页) -->
-    <section id="cover" class="section active">
-        <div class="envelope" id="envelope">
-            <div class="envelope-flap"></div>
-            <div class="envelope-body">
-                <p>致 我最爱的你</p>
-                <h2>点击开启</h2>
+    <!-- 5. 音乐控制按钮 (永远可见) -->
+    <div id="music-toggle">🎵</div>
+
+    <!-- 6. 导航栏 -->
+    <header>
+        <nav>
+            <a href="#" class="nav-link active" data-target="timeline-view">我们的故事</a>
+            <a href="#" class="nav-link" data-target="letter-view">一封情书</a>
+            <a href="#" class="nav-link" data-target="future-view">未来约定</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 视图1: 时间轴 -->
+        <section id="timeline-view" class="view active">
+            <div class="hero-text">
+                <h1 id="typewriter"></h1>
+                <p>From 2022.03.27 to Forever</p>
             </div>
-        </div>
-    </section>
-
-    <!-- 第一章：初见 -->
-    <section id="chapter1" class="section">
-        <div class="bg-image" style="background-image: url('images/photo1.jpg');"></div>
-        <div class="content">
-            <h1>初见</h1>
-            <p id="ch1-text"></p>
-        </div>
-    </section>
-
-    <!-- 第二章：回忆画廊 -->
-    <section id="chapter2" class="section">
-        <h1>我们的回忆</h1>
-        <div class="gallery-container">
-            <div class="gallery">
-                <div class="gallery-item">
-                    <img src="images/photo2.jpg" alt="回忆2">
-                    <p>每一次心动，都值得被记录</p>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                
+                <!-- 记忆点 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>初识 · 一切开始的地方</h3>
+                        <p class="date">2022年7月7日</p>
+                        <div class="photo-wrapper">
+                            <img src="images/photo1.jpg" alt="第一次见面" onclick="openPhotoViewer('images/photo1.jpg')">
+                        </div>
+                        <p>世界很大，幸好遇见。那天，夏天的风里，都是你的味道。</p>
+                    </div>
                 </div>
-                <div class="gallery-item">
-                    <img src="images/photo3.jpg" alt="回忆3">
-                    <p>和你在一起，连空气都是甜的</p>
+
+                <!-- 记忆点 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>心动 · 第一次约会</h3>
+                        <p class="date">2022年12月10日</p>
+                        <div class="photo-wrapper">
+                            <img src="images/photo2.jpg" alt="第一次约会" onclick="openPhotoViewer('images/photo2.jpg')">
+                        </div>
+                        <p>笨拙的对话，藏不住的心跳。原来电影里的情节，真的会发生在自己身上。</p>
+                    </div>
                 </div>
-                <!-- 可以继续添加更多照片 -->
+
+                <!-- 记忆点 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>同行 · 第一次旅行</h3>
+                        <p class="date">2023年1月17日</p>
+                        <div class="photo-wrapper">
+                            <img src="images/photo3.jpg" alt="第一次旅行" onclick="openPhotoViewer('images/photo3.jpg')">
+                        </div>
+                        <p>和你一起看的风景，才叫风景。山海辽阔，都不及你眼里的星河。</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 第三章：星空下的约定 -->
-    <section id="chapter3" class="section">
-        <canvas id="starCanvas"></canvas>
-        <div class="content">
-            <h1>星空下的约定</h1>
-            <p>点击星空，许下我们的愿望</p>
-        </div>
-        <div id="promises"></div>
-    </section>
-
-    <!-- 第四章：最后的告白 -->
-    <section id="chapter4" class="section">
-        <div class="content">
-            <h1>最后的告白</h1>
-            <div class="letter-final">
-                <p>亲爱的，</p>
-                <p>这封信很短，装不下我三年的思念。</p>
-                <p>这封信也很长，写满了我们未来的每一天。</p>
-                <p>谢谢你，出现在我的生命里。</p>
-                <p>三周年快乐，我爱你。</p>
-                <p class="signature">永远爱你的，<br>[你的名字]</p>
+        <!-- 视图2: 信件页 -->
+        <section id="letter-view" class="view">
+            <div class="content-card">
+                <div id="unlockForm">
+                    <h2>这封信，只属于你</h2>
+                    <p>请输入你的生日，解锁我为你写的话</p>
+                    <input type="date" id="birthdayInput">
+                    <button onclick="checkBirthday()">解锁 ❤️</button>
+                </div>
+                <div id="letterContent" style="display: none;">
+                    <h1>To My Dearest Love,</h1>
+                    <p id="letter-text"></p> <!-- 打字机效果 -->
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
+        <!-- 视图3: 未来约定页 -->
+        <section id="future-view" class="view">
+            <div class="content-card">
+                <h1>Our Next Chapter</h1>
+                <p>我们未完待续的故事...</p>
+                <ul class="future-list">
+                    <li>🏔️ 去冰岛看极光，在星空下许愿</li>
+                    <li>🏠 一起装修我们的小家，每个角落都是爱</li>
+                    <li>🐻 养一只肥猫，看它在我们脚边长大</li>
+                    <li>💍 在一个只有我们知道的日子，给你一个家</li>
+                    <li>👨‍👩‍👧‍👦 组建我们自己的小家庭，听孩子叫我们爸爸妈妈</li>
+                    <li>👵🏻👴🏻 变成两个可爱的老头老太太，还手牵手去散步</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- 全屏照片查看器 -->
+    <div id="photo-viewer" class="photo-viewer">
+        <span class="close-viewer">&times;</span>
+        <img class="viewer-content" id="viewer-img">
+    </div>
+
+    <!-- 引入库和脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,145 +1,163 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 全局变量 ---
+    // --- 1. 音乐控制 (彻底解决版) ---
     const bgMusic = document.getElementById('bgMusic');
-    const sections = document.querySelectorAll('.section');
-    let currentSection = 0;
-    const promises = [
-        "一起去冰岛看极光",
-        "养一只可爱的金毛",
-        "把我们的家布置成喜欢的样子",
-        "每年都去一个没去过的地方",
-        "永远做彼此最坚实的依靠"
-    ];
-    let promiseIndex = 0;
+    const musicToggle = document.getElementById('music-toggle');
+    let isMusicPlaying = false;
 
-    // --- 音乐控制 (严格绑定在封面点击) ---
-    bgMusic.volume = 0.5;
-
-    // --- 封面交互：打开信封，播放音乐，进入第一章 ---
-    const envelope = document.getElementById('envelope');
-    envelope.addEventListener('click', () => {
-        envelope.classList.add('open');
-        // 尝试播放音乐
+    function initAudio() {
+        bgMusic.volume = 0.4;
+        bgMusic.currentTime = 0;
+        bgMusic.muted = true;
+        
         const playPromise = bgMusic.play();
         if (playPromise !== undefined) {
             playPromise.then(_ => {
-                console.log("音乐开始播放");
+                console.log("音频已准备就绪，等待用户交互。");
             }).catch(error => {
                 console.log("自动播放被阻止:", error);
-                // 如果失败，可以在这里添加一个手动播放的提示
             });
         }
-        // 延迟后进入下一章
-        setTimeout(() => {
-            showSection(1);
-        }, 1500);
+    }
+
+    musicToggle.addEventListener('click', () => {
+        if (isMusicPlaying) {
+            bgMusic.pause();
+            musicToggle.textContent = '🎵';
+            isMusicPlaying = false;
+        } else {
+            if (bgMusic.muted) { bgMusic.muted = false; }
+            bgMusic.play();
+            musicToggle.textContent = '🔇';
+            isMusicPlaying = true;
+        }
     });
 
-    // --- 章节切换逻辑 ---
-    function showSection(index) {
-        sections.forEach(s => s.classList.remove('active'));
-        sections[index].classList.add('active');
-        currentSection = index;
-
-        // 根据章节执行特定动画
-        if (index === 1) { // 第一章
-            typeWriter();
-        } else if (index === 3) { // 第三章
-            initStarCanvas();
+    // 监听全局第一次点击，用于启动音乐 (兼容桌面和移动)
+    function startMusic() {
+        if (bgMusic.muted && !isMusicPlaying) {
+            bgMusic.muted = false;
+            bgMusic.play();
+            musicToggle.textContent = '🔇';
+            isMusicPlaying = true;
+            console.log("音乐已通过用户交互启动。");
+            document.body.removeEventListener('click', startMusic);
+            document.body.removeEventListener('touchstart', startMusic);
         }
     }
+    document.body.addEventListener('click', startMusic, { once: true });
+    document.body.addEventListener('touchstart', startMusic, { once: true, passive: true });
 
-    // --- 滑动/滚轮切换章节 ---
-    let touchStartY = 0;
-    let touchEndY = 0;
+    initAudio();
 
-    document.addEventListener('touchstart', e => {
-        touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-
-    document.addEventListener('touchend', e => {
-        touchEndY = e.changedTouches[0].screenY;
-        handleSwipe();
-    }, { passive: true });
-
-    document.addEventListener('wheel', e => {
-        if (e.deltaY > 0) { // 向下滚动
-            if (currentSection < sections.length - 1) showSection(currentSection + 1);
-        } else { // 向上滚动
-            if (currentSection > 0) showSection(currentSection - 1);
-        }
-    }, { passive: true });
-
-    function handleSwipe() {
-        if (touchEndY < touchStartY - 50) { // 向上滑动
-            if (currentSection < sections.length - 1) showSection(currentSection + 1);
-        }
-        if (touchEndY > touchStartY + 50) { // 向下滑动
-            if (currentSection > 0) showSection(currentSection - 1);
-        }
+    // --- 2. 鼠标跟随光晕 (仅在桌面端工作) ---
+    const cursorGlow = document.querySelector('.cursor-glow');
+    if (window.matchMedia("(pointer: fine)").matches) {
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
     }
 
-    // --- 第一章：打字机效果 ---
-    function typeWriter() {
-        const text = "世界很大，幸好遇见。那天，春天的风里，都是你的味道。";
-        const element = document.getElementById('ch1-text');
+    // --- 3. 粒子背景配置 ---
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 },
+            move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
+            modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } }
+        },
+        retina_detect: true
+    });
+
+    // --- 4. 打字机效果 (封装成可复用函数) ---
+    function typeWriter(elementId, text, speed = 100) {
+        const element = document.getElementById(elementId);
         element.innerHTML = '';
         let i = 0;
         function type() {
             if (i < text.length) {
                 element.innerHTML += text.charAt(i);
                 i++;
-                setTimeout(type, 100);
+                setTimeout(type, speed);
             }
         }
         type();
     }
 
-    // --- 第三章：星空与点击生成约定 ---
-    function initStarCanvas() {
-        const canvas = document.getElementById('starCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    // --- 5. 视图切换 ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const views = document.querySelectorAll('.view');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+            navLinks.forEach(l => l.classList.remove('active'));
+            views.forEach(v => v.classList.remove('active'));
+            link.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
 
-        // 绘制静态星星背景
-        for (let i = 0; i < 200; i++) {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            const r = Math.random() * 1.5;
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2);
-            ctx.fillStyle = 'white';
-            ctx.fill();
-        }
+    // --- 6. 滚动触发时间轴动画 ---
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    timelineItems.forEach(item => { observer.observe(item); });
 
-        // 点击事件
-        canvas.onclick = (e) => {
-            if (promiseIndex >= promises.length) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // 绘制新星星
-            ctx.beginPath();
-            ctx.arc(x, y, 3, 0, Math.PI * 2);
-            ctx.fillStyle = '#e8b4b8';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#e8b4b8';
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // 显示约定文字
-            const promiseDiv = document.createElement('div');
-            promiseDiv.className = 'promise';
-            promiseDiv.textContent = promises[promiseIndex];
-            promiseDiv.style.left = `${x}px`;
-            promiseDiv.style.top = `${y}px`;
-            document.getElementById('promises').appendChild(promiseDiv);
-            
-            promiseIndex++;
-        };
+    // --- 7. 爱心雨彩蛋 ---
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+        document.getElementById('hearts-rain').appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
     }
+
+    // --- 8. 信件解锁 (带打字机和爱心雨) ---
+    window.checkBirthday = function() {
+        const input = document.getElementById('birthdayInput').value;
+        const herBirthday = "2003-01-04";
+        const letterText = `亲爱的，<br><br>当你看到这些文字时，我们已经携手走过了1095个日夜。三年，仿佛一瞬，又仿佛一生。我想用这封信，封存我所有说不出口的爱意与感谢。<br><br>谢谢你，出现在我的生命里，像一道光，照亮了我所有的平凡。和你在一起的每一天，都像是偷来的好时光。我怀念我们第一次见面的紧张，第一次约会的甜蜜，第一次旅行的憧憬...我们在一起的每一个瞬间，都已被我珍藏心底，反复回味。<br><br>你让我明白，爱不是寻找一个完美的人，而是学会用完美的眼光，欣赏那个不完美的对方。谢谢你包容我的小缺点，分享我的大梦想。你的笑容，是我对抗世界所有疲惫的解药。<br><br>三周年快乐。未来的路，我希望每一步都有你的脚印。让我们一起去看更多的风景，去经历更多的故事，去把生活过成我们最想要的样子。<br><br>我爱你，不止三千遍。<br><br>永远爱你的，<br>[沈大强]`;
+
+        if (input === herBirthday) {
+            document.getElementById('unlockForm').style.display = 'none';
+            document.getElementById('letterContent').style.display = 'block';
+            typeWriter('letter-text', letterText, 30);
+            for(let i = 0; i < 15; i++) { setTimeout(createHeart, i * 200); }
+        } else {
+            alert("哎呀，好像不对哦，再想想看？😉");
+        }
+    };
+
+    // --- 9. 全屏照片查看器 ---
+    const photoViewer = document.getElementById('photo-viewer');
+    const viewerImg = document.getElementById('viewer-img');
+    const closeBtn = document.querySelector('.close-viewer');
+
+    window.openPhotoViewer = function(src) {
+        photoViewer.style.display = 'block';
+        viewerImg.src = src;
+    };
+
+    function closeViewer() { photoViewer.style.display = 'none'; }
+    closeBtn.onclick = closeViewer;
+    photoViewer.onclick = (e) => { if (e.target === photoViewer) { closeViewer(); } };
 });

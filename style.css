@@ -53,26 +53,7 @@ body {
 /* --- 粒子背景 --- */
 #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; }
 
-/* --- 音乐控制按钮 --- */
-#music-toggle {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    font-size: 2rem;
-    cursor: pointer;
-    z-index: 1000;
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease, background 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-#music-toggle:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.2); }
+/* --- 音乐控制按钮样式已删除 --- */
 
 /* --- 导航栏 --- */
 header {
@@ -275,7 +256,7 @@ main { padding-top: 80px; }
 #letterContent { 
     text-align: left; 
     line-height: 1.8;
-    white-space: pre-line; /* 修复换行问题的核心！ */
+    white-space: pre-line;
 }
 #letterContent h1 { text-align: center; }
 

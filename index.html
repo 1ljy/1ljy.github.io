@@ -26,15 +26,12 @@
     <!-- 3. 爱心雨容器 -->
     <div id="hearts-rain"></div>
 
-    <!-- 4. 背景音乐 -->
-    <audio id="bgMusic" loop>
+    <!-- 4. 背景音乐 (关键修改：添加 autoplay 和 muted) -->
+    <audio id="bgMusic" autoplay muted loop>
         <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 5. 音乐控制按钮 (永远可见) -->
-    <div id="music-toggle">🎵</div>
-
-    <!-- 6. 导航栏 -->
+    <!-- 5. 导航栏 -->
     <header>
         <nav>
             <a href="#" class="nav-link active" data-target="timeline-view">我们的故事</a>
@@ -48,7 +45,7 @@
         <section id="timeline-view" class="view active">
             <div class="hero-text">
                 <h1 id="typewriter"></h1>
-                <p>From 2022.07.07 to Forever</p> <!-- 用户修改：更新日期 -->
+                <p>From 2021.03.27 to Forever</p>
             </div>
             <div class="timeline-container">
                 <div class="timeline-line"></div>
@@ -58,11 +55,11 @@
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h3>初识 · 一切开始的地方</h3>
-                        <p class="date">2022年7月7日</p> <!-- 用户修改：日期改为2022年7月7日 -->
+                        <p class="date">2021年8月8日</p>
                         <div class="photo-wrapper">
                             <img src="images/photo1.jpg" alt="第一次见面" onclick="openPhotoViewer('images/photo1.jpg')">
                         </div>
-                        <p>世界很大，幸好遇见。那天，夏天的风里，都是你的味道。</p> <!-- 用户修改：春天改为夏天 -->
+                        <p>世界很大，幸好遇见。那天，夏风漫过窗棂时，隔着距离，听见你的声音。没有画面，却记了很久。</p>
                     </div>
                 </div>
 
@@ -71,7 +68,7 @@
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h3>心动 · 第一次约会</h3>
-                        <p class="date">2022年12月10日</p> <!-- 用户修改：日期改为2022年12月10日 -->
+                        <p class="date">2022年7月7日</p>
                         <div class="photo-wrapper">
                             <img src="images/photo2.jpg" alt="第一次约会" onclick="openPhotoViewer('images/photo2.jpg')">
                         </div>
@@ -84,7 +81,7 @@
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h3>同行 · 第一次旅行</h3>
-                        <p class="date">2023年1月17日</p> <!-- 用户修改：日期改为2023年1月17日 -->
+                        <p class="date">2023年1月17日</p>
                         <div class="photo-wrapper">
                             <img src="images/photo3.jpg" alt="第一次旅行" onclick="openPhotoViewer('images/photo3.jpg')">
                         </div>
@@ -118,7 +115,7 @@
                 <ul class="future-list">
                     <li>🏔️ 去冰岛看极光，在星空下许愿</li>
                     <li>🏠 一起装修我们的小家，每个角落都是爱</li>
-                    <li>🐻 养一只肥猫，看它在我们脚边长大</li> <!-- 用户修改：金毛改为肥猫 -->
+                    <li>🐻 养一只肥猫，看它在我们脚边长大</li>
                     <li>💍 在一个只有我们知道的日子，给你一个家</li>
                     <li>👨‍👩‍👧‍👦 组建我们自己的小家庭，听孩子叫我们爸爸妈妈</li>
                     <li>👵🏻👴🏻 变成两个可爱的老头老太太，还手牵手去散步</li>

@@ -1,36 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. 音乐控制 (彻底解决版) ---
+    // --- 1. 自动播放音乐 (核心逻辑) ---
     const bgMusic = document.getElementById('bgMusic');
-    const musicToggle = document.getElementById('music-toggle');
-    let isMusicPlaying = false;
+    bgMusic.volume = 0.4;
 
-    function initAudio() {
-        bgMusic.volume = 0.4;
-        bgMusic.currentTime = 0;
-        bgMusic.muted = true;
-        const playPromise = bgMusic.play();
-        if (playPromise !== undefined) {
-            playPromise.then(_ => { console.log("音频已准备就绪，等待用户交互。"); }).catch(error => { console.log("自动播放被阻止:", error); });
+    // 监听用户的第一次交互，然后取消静音
+    function enableAudio() {
+        // 确保音频是静音状态
+        if (bgMusic.muted) {
+            bgMusic.muted = false;
+            bgMusic.play().catch(error => console.error("取消静音后播放失败:", error));
         }
+        // 移除事件监听器，确保只触发一次
+        document.body.removeEventListener('click', enableAudio);
+        document.body.removeEventListener('touchstart', enableAudio);
+        console.log("音频已通过用户交互成功启动！");
     }
 
-    musicToggle.addEventListener('click', () => {
-        if (isMusicPlaying) { bgMusic.pause(); musicToggle.textContent = '🎵'; isMusicPlaying = false; }
-        else { if (bgMusic.muted) { bgMusic.muted = false; } bgMusic.play(); musicToggle.textContent = '🔇'; isMusicPlaying = true; }
-    });
-
-    function startMusic() {
-        if (bgMusic.muted && !isMusicPlaying) {
-            bgMusic.muted = false; bgMusic.play(); musicToggle.textContent = '🔇'; isMusicPlaying = true;
-            console.log("音乐已通过用户交互启动。");
-            document.body.removeEventListener('click', startMusic);
-            document.body.removeEventListener('touchstart', startMusic);
-        }
-    }
-    document.body.addEventListener('click', startMusic, { once: true });
-    document.body.addEventListener('touchstart', startMusic, { once: true, passive: true });
-    initAudio();
+    // 同时监听点击和触摸事件，以覆盖桌面和移动端
+    document.body.addEventListener('click', enableAudio, { once: true });
+    document.body.addEventListener('touchstart', enableAudio, { once: true, passive: true });
 
     // --- 2. 鼠标跟随光晕 ---
     const cursorGlow = document.querySelector('.cursor-glow');
@@ -77,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('hearts-rain').appendChild(heart); setTimeout(() => heart.remove(), 5000);
     }
 
-    // --- 8. 信件解锁 (修复换行问题) ---
+    // --- 8. 信件解锁 ---
     window.checkBirthday = function() {
         const input = document.getElementById('birthdayInput').value; const herBirthday = "2003-01-04";
         const letterText = `亲爱的，
@@ -93,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 我爱你，不止三千遍。
 
 永远爱你的，
-[沈大强]`;
+[大强]`;
 
         if (input === herBirthday) {
             document.getElementById('unlockForm').style.display = 'none';

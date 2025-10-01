@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>致我最爱的你 | 三周年快乐</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 引入更浪漫的字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 1. 动态星空背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 2. 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 3. 导航栏 -->
+    <header>
+        <nav>
+            <a href="#" class="nav-link active" data-target="timeline-view">我们的故事</a>
+            <a href="#" class="nav-link" data-target="letter-view">一封情书</a>
+            <a href="#" class="nav-link" data-target="future-view">未来约定</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 视图1: 时间轴 (默认显示) -->
+        <section id="timeline-view" class="view active">
+            <div class="hero-text">
+                <h1 id="typewriter"></h1>
+                <p>From 2022.03.27 to Forever</p>
+            </div>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                
+                <!-- 记忆点 1: 初识 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>初识 · 一切开始的地方</h3>
+                        <p class="date">2022年3月27日</p>
+                        <img src="images/photo1.jpg" alt="第一次见面">
+                        <p>世界很大，幸好遇见。那天，春天的风里，都是你的味道。</p>
+                    </div>
+                </div>
+
+                <!-- 记忆点 2: 第一次约会 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>心动 · 第一次约会</h3>
+                        <p class="date">2022年4月10日</p>
+                        <img src="images/photo2.jpg" alt="第一次约会">
+                        <p>笨拙的对话，藏不住的心跳。原来电影里的情节，真的会发生在自己身上。</p>
+                    </div>
+                </div>
+
+                <!-- 记忆点 3: 第一次旅行 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>同行 · 第一次旅行</h3>
+                        <p class="date">2022年10月1日</p>
+                        <img src="images/photo3.jpg" alt="第一次旅行">
+                        <p>和你一起看的风景，才叫风景。山海辽阔，都不及你眼里的星河。</p>
+                    </div>
+                </div>
+                
+                <!-- 你可以继续添加更多记忆点 -->
+            </div>
+        </section>
+
+        <!-- 视图2: 信件页 (默认隐藏) -->
+        <section id="letter-view" class="view">
+            <div class="content-card">
+                <div id="unlockForm">
+                    <h2>这封信，只属于你</h2>
+                    <p>请输入你的生日，解锁我为你写的话</p>
+                    <input type="date" id="birthdayInput">
+                    <button onclick="checkBirthday()">解锁 ❤️</button>
+                </div>
+                <div id="letterContent" style="display: none;">
+                    <h1>To My Dearest Love,</h1>
+                    <p>
+                        亲爱的，<br><br>
+                        当你看到这些文字时，我们已经携手走过了1095个日夜。三年，仿佛一瞬，又仿佛一生。我想用这封信，封存我所有说不出口的爱意与感谢。<br><br>
+                        谢谢你，出现在我的生命里，像一道光，照亮了我所有的平凡。和你在一起的每一天，都像是偷来的好时光。我怀念我们第一次见面的紧张，第一次约会的甜蜜，第一次旅行的憧憬...我们在一起的每一个瞬间，都已被我珍藏心底，反复回味。<br><br>
+                        你让我明白，爱不是寻找一个完美的人，而是学会用完美的眼光，欣赏那个不完美的对方。谢谢你包容我的小缺点，分享我的大梦想。你的笑容，是我对抗世界所有疲惫的解药。<br><br>
+                        三周年快乐。未来的路，我希望每一步都有你的脚印。让我们一起去看更多的风景，去经历更多的故事，去把生活过成我们最想要的样子。<br><br>
+                        我爱你，不止三千遍。<br><br>
+                        永远爱你的，<br>
+                        [沈大强]
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视图3: 未来约定页 (默认隐藏) -->
+        <section id="future-view" class="view">
+            <div class="content-card">
+                <h1>Our Next Chapter</h1>
+                <p>我们未完待续的故事...</p>
+                <ul class="future-list">
+                    <li>🏔️ 去冰岛看极光，在星空下许愿</li>
+                    <li>🏠 一起装修我们的小家，每个角落都是爱</li>
+                    <li>🐻 养一只金毛，看它在我们脚边长大</li>
+                    <li>💍 在一个只有我们知道的日子，给你一个家</li>
+                    <li>👨‍👩‍👧‍👦 组建我们自己的小家庭，听孩子叫我们爸爸妈妈</li>
+                    <li>👵🏻👴🏻 变成两个可爱的老头老太太，还手牵手去散步</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入粒子效果库和我们的脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

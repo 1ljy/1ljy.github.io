@@ -1,0 +1,263 @@
+/* --- 全局变量与样式 --- */
+:root {
+    --primary-color: #ff6b9d; /* 浪漫粉 */
+    --secondary-color: #feca57; /* 温暖金 */
+    --bg-color-start: #0f0c29; /* 深紫 */
+    --bg-color-end: #302b63; /* 深蓝 */
+    --text-color: #f5f5f5;
+    --card-bg: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+    color: var(--text-color);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* --- 粒子背景 --- */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* --- 导航栏 --- */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    margin: 0 25px;
+    font-weight: 400;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link.active, .nav-link:hover {
+    color: var(--primary-color);
+}
+.nav-link.active::after, .nav-link:hover::after {
+    width: 100%;
+}
+
+/* --- 视图容器 --- */
+main {
+    padding-top: 80px;
+}
+.view {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.view.active {
+    display: block;
+    opacity: 1;
+}
+
+/* --- 首页 Hero 文字与打字机效果 --- */
+.hero-text {
+    text-align: center;
+    padding: 100px 20px 50px;
+}
+#typewriter {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 15px rgba(255, 107, 157, 0.5);
+}
+#typewriter::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* --- 时间轴 --- */
+.timeline-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+    transform: translateX(-50%);
+}
+.timeline-item {
+    position: relative;
+    width: 100%;
+    margin-bottom: 80px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease;
+}
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.timeline-item:nth-child(odd) .timeline-content {
+    margin-right: calc(50% + 40px);
+    text-align: right;
+}
+.timeline-item:nth-child(even) .timeline-content {
+    margin-left: calc(50% + 40px);
+}
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    background: var(--secondary-color);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 20px var(--secondary-color);
+}
+.timeline-content {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+.timeline-content h3 {
+    color: var(--secondary-color);
+    margin-bottom: 5px;
+}
+.timeline-content .date {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 15px;
+}
+.timeline-content img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+/* --- 通用卡片样式 (信件和未来页) --- */
+.content-card {
+    max-width: 700px;
+    margin: 100px auto;
+    padding: 50px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+.content-card h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+.content-card input {
+    padding: 12px;
+    margin: 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+}
+.content-card button {
+    padding: 12px 30px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.content-card button:hover {
+    transform: scale(1.05);
+}
+#letterContent {
+    text-align: left;
+    line-height: 1.8;
+}
+#letterContent h1 {
+    text-align: center;
+}
+
+/* --- 未来约定列表 --- */
+.future-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+.future-list li {
+    background: rgba(255, 255, 255, 0.05);
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+.future-list li:hover {
+    transform: translateX(10px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- 响应式设计 --- */
+@media (max-width: 768px) {
+    #typewriter { font-size: 3rem; }
+    .timeline-line { left: 30px; }
+    .timeline-item .timeline-content {
+        margin-left: 70px !important;
+        margin-right: 0 !important;
+        text-align: left !important;
+    }
+    .timeline-dot { left: 30px; }
+    .content-card { margin: 80px 20px; padding: 30px; }
+    .nav-link { margin: 0 15px; font-size: 0.9rem; }
+}

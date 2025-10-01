@@ -169,10 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 9. 全屏照片查看器 ---
+    // --- 9. 全屏照片查看器 (直接放大版) ---
     const photoViewer = document.getElementById('photo-viewer');
     const viewerImg = document.getElementById('viewer-img');
-    const closeBtn = document.querySelector('.close-viewer');
 
     window.openPhotoViewer = function(src) {
         photoViewer.style.display = 'block';
@@ -183,11 +182,15 @@ document.addEventListener('DOMContentLoaded', () => {
         photoViewer.style.display = 'none';
     }
 
-    closeBtn.onclick = closeViewer;
-    photoViewer.onclick = (e) => {
-        if (e.target === photoViewer) {
+    // 修改关闭逻辑：点击图片本身关闭
+    viewerImg.onclick = closeViewer;
+    
+    // 增加按 ESC 键关闭的功能
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && photoViewer.style.display === 'block') {
             closeViewer();
         }
-    };
+    });
+
 
 });

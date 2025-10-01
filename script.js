@@ -127,17 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => heart.remove(), 5000);
     }
 
-    // 新增：开始爱心雨效果的函数
-    function startHeartsRain() {
-        // 每300毫秒创建一个爱心
-        const heartInterval = setInterval(createHeart, 300);
-        // 3秒后停止创建爱心
-        setTimeout(() => {
-            clearInterval(heartInterval);
-        }, 3000);
-    }
-
-    // --- 8. 信件解锁 (节奏优化版) ---
+    // --- 8. 信件解锁 (意境优化版) ---
     window.checkBirthday = function() {
         const input = document.getElementById('birthdayInput').value;
         const herBirthday = "2003-01-04"; // 请替换成她的生日
@@ -160,18 +150,28 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('unlockForm').style.display = 'none';
             document.getElementById('letterContent').style.display = 'block';
             
-            // 调整打字速度，并在打字结束后触发爱心雨
+            // 1. 立即开始爱心雨
+            const heartInterval = setInterval(createHeart, 300);
+            
+            // 2. 开始打字效果
             const typingSpeed = 50; // 舒适的阅读速度
-            typeWriter('letter-text', letterText, typingSpeed, startHeartsRain);
+            typeWriter('letter-text', letterText, typingSpeed, () => {
+                // 3. 打字结束后，再等待3秒停止爱心雨
+                setTimeout(() => {
+                    clearInterval(heartInterval); // 停止创建新的爱心
+                    console.log("信已读完，爱心雨停止。");
+                }, 3000);
+            });
 
         } else {
             alert("哎呀，好像不对哦，再想想看？😉");
         }
     };
 
-    // --- 9. 全屏照片查看器 (直接放大版) ---
+    // --- 9. 全屏照片查看器 ---
     const photoViewer = document.getElementById('photo-viewer');
     const viewerImg = document.getElementById('viewer-img');
+    const closeBtn = document.querySelector('.close-viewer');
 
     window.openPhotoViewer = function(src) {
         photoViewer.style.display = 'block';
@@ -182,15 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
         photoViewer.style.display = 'none';
     }
 
-    // 修改关闭逻辑：点击图片本身关闭
-    viewerImg.onclick = closeViewer;
-    
-    // 增加按 ESC 键关闭的功能
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && photoViewer.style.display === 'block') {
+    closeBtn.onclick = closeViewer;
+    photoViewer.onclick = (e) => {
+        if (e.target === photoViewer) {
             closeViewer();
         }
-    });
-
+    };
 
 });

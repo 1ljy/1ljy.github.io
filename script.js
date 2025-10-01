@@ -144,28 +144,22 @@ document.addEventListener('DOMContentLoaded', () => {
 我爱你，不止三千遍。
 
 永远爱你的，
-大强`; // 落款已确认
+[大强]`; // 请替换成你的名字
 
         if (input === herBirthday) {
-            console.log("【调试】生日正确，开始解锁信件和爱心雨！");
-            
             document.getElementById('unlockForm').style.display = 'none';
             document.getElementById('letterContent').style.display = 'block';
             
             // 1. 立即开始爱心雨
-            console.log("【调试】准备启动爱心雨...");
             const heartInterval = setInterval(createHeart, 300);
-            console.log("【调试】爱心雨已启动！");
             
             // 2. 开始打字效果
-            const typingSpeed = 50;
-            console.log("【调试】开始打字效果...");
+            const typingSpeed = 50; // 舒适的阅读速度
             typeWriter('letter-text', letterText, typingSpeed, () => {
                 // 3. 打字结束后，再等待3秒停止爱心雨
-                console.log("【调试】打字效果结束，3秒后将停止爱心雨。");
                 setTimeout(() => {
-                    clearInterval(heartInterval);
-                    console.log("【调试】爱心雨已停止。");
+                    clearInterval(heartInterval); // 停止创建新的爱心
+                    console.log("信已读完，爱心雨停止。");
                 }, 3000);
             });
 
@@ -174,9 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 9. 全屏照片查看器 (已修复) ---
+    // --- 9. 全屏照片查看器 ---
     const photoViewer = document.getElementById('photo-viewer');
     const viewerImg = document.getElementById('viewer-img');
+    const closeBtn = document.querySelector('.close-viewer');
 
     window.openPhotoViewer = function(src) {
         photoViewer.style.display = 'block';
@@ -187,14 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
         photoViewer.style.display = 'none';
     }
 
-    // 修改关闭逻辑：点击图片本身关闭
-    viewerImg.onclick = closeViewer;
-    
-    // 增加按 ESC 键关闭的功能
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && photoViewer.style.display === 'block') {
+    closeBtn.onclick = closeViewer;
+    photoViewer.onclick = (e) => {
+        if (e.target === photoViewer) {
             closeViewer();
         }
-    });
+    };
 
 });

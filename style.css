@@ -15,15 +15,15 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
     background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
     color: var(--text-color);
     overflow-x: hidden;
     min-height: 100vh;
-    cursor: none; /* 默认隐藏鼠标，为桌面端准备 */
+    cursor: none;
 }
 
-/* --- 鼠标跟随光晕 (仅在桌面端显示) --- */
+/* --- 鼠标跟随光晕 --- */
 .cursor-glow {
     width: 300px;
     height: 300px;
@@ -272,7 +272,11 @@ main { padding-top: 80px; }
     transition: transform 0.3s ease;
 }
 .content-card button:hover { transform: scale(1.05); }
-#letterContent { text-align: left; line-height: 1.8; }
+#letterContent { 
+    text-align: left; 
+    line-height: 1.8;
+    white-space: pre-line; /* 修复换行问题的核心！ */
+}
 #letterContent h1 { text-align: center; }
 
 /* --- 未来约定列表 --- */
@@ -287,17 +291,13 @@ main { padding-top: 80px; }
 }
 .future-list li:hover { transform: translateX(10px); background: rgba(255, 255, 255, 0.1); }
 
-/* --- 响应式设计 (关键！针对手机优化) --- */
+/* --- 响应式设计 --- */
 @media (max-width: 768px) {
-    body { cursor: auto; } /* 恢复默认鼠标 */
-    .cursor-glow { display: none; } /* 隐藏光晕 */
+    body { cursor: auto; }
+    .cursor-glow { display: none; }
     #typewriter { font-size: 3rem; }
     .timeline-line { left: 30px; }
-    .timeline-item .timeline-content {
-        margin-left: 70px !important;
-        margin-right: 0 !important;
-        text-align: left !important;
-    }
+    .timeline-item .timeline-content { margin-left: 70px !important; margin-right: 0 !important; text-align: left !important; }
     .timeline-dot { left: 30px; }
     .content-card { margin: 80px 20px; padding: 30px; }
     .nav-link { margin: 0 15px; font-size: 0.9rem; }

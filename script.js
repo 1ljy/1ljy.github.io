@@ -1,117 +1,145 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. 音乐控制 (静音自动播放，点击后有声) ---
+    // --- 全局变量 ---
     const bgMusic = document.getElementById('bgMusic');
-    bgMusic.volume = 0.4;
-    bgMusic.muted = true;
-    bgMusic.play().catch(e => console.log("Autoplay prevented"));
+    const sections = document.querySelectorAll('.section');
+    let currentSection = 0;
+    const promises = [
+        "一起去冰岛看极光",
+        "养一只可爱的金毛",
+        "把我们的家布置成喜欢的样子",
+        "每年都去一个没去过的地方",
+        "永远做彼此最坚实的依靠"
+    ];
+    let promiseIndex = 0;
 
-    document.body.addEventListener('click', () => {
-        if (bgMusic.muted) {
-            bgMusic.muted = false;
-            bgMusic.play();
+    // --- 音乐控制 (严格绑定在封面点击) ---
+    bgMusic.volume = 0.5;
+
+    // --- 封面交互：打开信封，播放音乐，进入第一章 ---
+    const envelope = document.getElementById('envelope');
+    envelope.addEventListener('click', () => {
+        envelope.classList.add('open');
+        // 尝试播放音乐
+        const playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                console.log("音乐开始播放");
+            }).catch(error => {
+                console.log("自动播放被阻止:", error);
+                // 如果失败，可以在这里添加一个手动播放的提示
+            });
         }
-    }, { once: true });
-
-    // --- 2. 粒子背景配置 ---
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
-            color: { value: "#ffffff" },
-            shape: { type: "circle" },
-            opacity: { value: 0.5, random: true },
-            size: { value: 3, random: true },
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: "#ffffff",
-                opacity: 0.2,
-                width: 1
-            },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: "none",
-                random: false,
-                straight: false,
-                out_mode: "out",
-                bounce: false
-            }
-        },
-        interactivity: {
-            detect_on: "canvas",
-            events: {
-                onhover: { enable: true, mode: "grab" },
-                onclick: { enable: true, mode: "push" },
-                resize: true
-            },
-            modes: {
-                grab: { distance: 140, line_linked: { opacity: 0.5 } },
-                push: { particles_nb: 4 }
-            }
-        },
-        retina_detect: true
+        // 延迟后进入下一章
+        setTimeout(() => {
+            showSection(1);
+        }, 1500);
     });
 
-    // --- 3. 打字机效果 ---
-    const typewriterElement = document.getElementById('typewriter');
-    const text = "Happy 3rd Anniversary";
-    let index = 0;
-    function type() {
-        if (index < text.length) {
-            typewriterElement.innerHTML += text.charAt(index);
-            index++;
-            setTimeout(type, 100);
+    // --- 章节切换逻辑 ---
+    function showSection(index) {
+        sections.forEach(s => s.classList.remove('active'));
+        sections[index].classList.add('active');
+        currentSection = index;
+
+        // 根据章节执行特定动画
+        if (index === 1) { // 第一章
+            typeWriter();
+        } else if (index === 3) { // 第三章
+            initStarCanvas();
         }
     }
-    setTimeout(type, 500); // 延迟半秒开始
 
-    // --- 4. 视图切换 ---
-    const navLinks = document.querySelectorAll('.nav-link');
-    const views = document.querySelectorAll('.view');
+    // --- 滑动/滚轮切换章节 ---
+    let touchStartY = 0;
+    let touchEndY = 0;
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('data-target');
+    document.addEventListener('touchstart', e => {
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
 
-            navLinks.forEach(l => l.classList.remove('active'));
-            views.forEach(v => v.classList.remove('active'));
+    document.addEventListener('touchend', e => {
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    }, { passive: true });
 
-            link.classList.add('active');
-            document.getElementById(targetId).classList.add('active');
-        });
-    });
-
-    // --- 5. 滚动触发时间轴动画 ---
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    timelineItems.forEach(item => {
-        observer.observe(item);
-    });
-
-    // --- 6. 信件解锁 (已填入你的生日) ---
-    window.checkBirthday = function() {
-        const input = document.getElementById('birthdayInput').value;
-        const herBirthday = "2003-01-04"; // 你女友的生日
-
-        if (input === herBirthday) {
-            document.getElementById('unlockForm').style.display = 'none';
-            document.getElementById('letterContent').style.display = 'block';
-        } else {
-            alert("哎呀，好像不对哦，再想想看？😉");
+    document.addEventListener('wheel', e => {
+        if (e.deltaY > 0) { // 向下滚动
+            if (currentSection < sections.length - 1) showSection(currentSection + 1);
+        } else { // 向上滚动
+            if (currentSection > 0) showSection(currentSection - 1);
         }
-    };
+    }, { passive: true });
+
+    function handleSwipe() {
+        if (touchEndY < touchStartY - 50) { // 向上滑动
+            if (currentSection < sections.length - 1) showSection(currentSection + 1);
+        }
+        if (touchEndY > touchStartY + 50) { // 向下滑动
+            if (currentSection > 0) showSection(currentSection - 1);
+        }
+    }
+
+    // --- 第一章：打字机效果 ---
+    function typeWriter() {
+        const text = "世界很大，幸好遇见。那天，春天的风里，都是你的味道。";
+        const element = document.getElementById('ch1-text');
+        element.innerHTML = '';
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, 100);
+            }
+        }
+        type();
+    }
+
+    // --- 第三章：星空与点击生成约定 ---
+    function initStarCanvas() {
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // 绘制静态星星背景
+        for (let i = 0; i < 200; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const r = Math.random() * 1.5;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+        }
+
+        // 点击事件
+        canvas.onclick = (e) => {
+            if (promiseIndex >= promises.length) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // 绘制新星星
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fillStyle = '#e8b4b8';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#e8b4b8';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 显示约定文字
+            const promiseDiv = document.createElement('div');
+            promiseDiv.className = 'promise';
+            promiseDiv.textContent = promises[promiseIndex];
+            promiseDiv.style.left = `${x}px`;
+            promiseDiv.style.top = `${y}px`;
+            document.getElementById('promises').appendChild(promiseDiv);
+            
+            promiseIndex++;
+        };
+    }
 });

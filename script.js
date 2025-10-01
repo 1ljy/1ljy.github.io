@@ -26,11 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function enableAudio() {
         // 检查是否真的需要取消静音，防止重复操作
         if (bgMusic.muted) {
-            // 新增：动态设置音乐源，实现按需加载
-            if (!bgMusic.src) {
-                bgMusic.src = bgMusic.getAttribute('data-src');
-            }
-            
             bgMusic.muted = false;
             bgMusic.play().then(() => {
                 console.log("音频已通过用户交互成功启动！");

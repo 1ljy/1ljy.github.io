@@ -33,8 +33,10 @@
     <!-- 3. 爱心雨容器 -->
     <div id="hearts-rain"></div>
 
-    <!-- 4. 背景音乐 (优化：改为按需加载) -->
-    <audio id="bgMusic" autoplay muted loop data-src="music/xiaoxingyun.mp3"></audio>
+ <!-- 4. 背景音乐 (优化：恢复直接加载以实现即时播放) -->
+<audio id="bgMusic" autoplay muted loop>
+    <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
+</audio>
 
     <!-- 5. 导航栏 -->
     <header>

@@ -1,53 +1,102 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. 自动播放音乐 (核心逻辑) ---
+    // --- 1. 自动播放音乐 (终极修复版) ---
     const bgMusic = document.getElementById('bgMusic');
     bgMusic.volume = 0.4;
 
+    // 核心修复函数：强制重置音频状态，解决缓存和状态不一致问题
+    function forceResetAudio() {
+        bgMusic.pause();           // 先确保它暂停
+        bgMusic.currentTime = 0;   // 再把播放时间拉回0
+        bgMusic.muted = true;      // 确保它是静音的
+        bgMusic.loop = true;       // 确保循环播放是开启的！
+        console.log("音频状态已强制重置。");
+        
+        // 尝试静音播放，为后续交互做准备
+        // 浏览器会阻止这个播放，但没关系，目的是让它“准备就绪”
+        bgMusic.play().catch(error => {
+            console.log("静音自动播放被浏览器阻止，这是正常的，等待用户交互。");
+        });
+    }
+
+    // 页面加载时，立即执行重置
+    forceResetAudio();
+
     // 监听用户的第一次交互，然后取消静音
     function enableAudio() {
-        // 确保音频是静音状态
+        // 检查是否真的需要取消静音，防止重复操作
         if (bgMusic.muted) {
             bgMusic.muted = false;
-            bgMusic.play().catch(error => console.error("取消静音后播放失败:", error));
+            bgMusic.play().then(() => {
+                console.log("音频已通过用户交互成功启动！");
+            }).catch(error => {
+                console.error("取消静音后播放失败:", error);
+            });
         }
         // 移除事件监听器，确保只触发一次
         document.body.removeEventListener('click', enableAudio);
         document.body.removeEventListener('touchstart', enableAudio);
-        console.log("音频已通过用户交互成功启动！");
     }
 
     // 同时监听点击和触摸事件，以覆盖桌面和移动端
     document.body.addEventListener('click', enableAudio, { once: true });
     document.body.addEventListener('touchstart', enableAudio, { once: true, passive: true });
 
-    // --- 2. 鼠标跟随光晕 ---
+
+    // --- 2. 鼠标跟随光晕 (仅在桌面端显示) ---
     const cursorGlow = document.querySelector('.cursor-glow');
     if (window.matchMedia("(pointer: fine)").matches) {
-        document.addEventListener('mousemove', (e) => { cursorGlow.style.left = e.clientX + 'px'; cursorGlow.style.top = e.clientY + 'px'; });
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
     }
 
     // --- 3. 粒子背景配置 ---
     particlesJS('particles-js', {
-        particles: { number: { value: 80, density: { enable: true, value_area: 800 } }, color: { value: "#ffffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 }, move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false } },
-        interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true }, modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } } },
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 },
+            move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
+            modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } }
+        },
         retina_detect: true
     });
 
     // --- 4. 打字机效果 ---
     function typeWriter(elementId, text, speed = 100) {
-        const element = document.getElementById(elementId); element.innerHTML = ''; let i = 0;
-        function type() { if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, speed); } }
+        const element = document.getElementById(elementId);
+        element.innerHTML = '';
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            }
+        }
         type();
     }
 
     // --- 5. 视图切换 ---
-    const navLinks = document.querySelectorAll('.nav-link'); const views = document.querySelectorAll('.view');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const views = document.querySelectorAll('.view');
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault(); const targetId = link.getAttribute('data-target');
-            navLinks.forEach(l => l.classList.remove('active')); views.forEach(v => v.classList.remove('active'));
-            link.classList.add('active'); document.getElementById(targetId).classList.add('active');
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+            navLinks.forEach(l => l.classList.remove('active'));
+            views.forEach(v => v.classList.remove('active'));
+            link.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
         });
     });
 
@@ -55,20 +104,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const timelineItems = document.querySelectorAll('.timeline-item');
     const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
     }, observerOptions);
     timelineItems.forEach(item => { observer.observe(item); });
 
     // --- 7. 爱心雨彩蛋 ---
     function createHeart() {
-        const heart = document.createElement('div'); heart.classList.add('heart'); heart.innerHTML = '❤️';
-        heart.style.left = Math.random() * 100 + 'vw'; heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-        document.getElementById('hearts-rain').appendChild(heart); setTimeout(() => heart.remove(), 5000);
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+        document.getElementById('hearts-rain').appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
     }
 
     // --- 8. 信件解锁 ---
     window.checkBirthday = function() {
-        const input = document.getElementById('birthdayInput').value; const herBirthday = "2003-01-04";
+        const input = document.getElementById('birthdayInput').value;
+        const herBirthday = "2003-01-04"; // 请替换成她的生日
         const letterText = `亲爱的，
 
 当你看到这些文字时，我们已经携手走过了1095个日夜。三年，仿佛一瞬，又仿佛一生。我想用这封信，封存我所有说不出口的爱意与感谢。
@@ -82,22 +141,40 @@ document.addEventListener('DOMContentLoaded', () => {
 我爱你，不止三千遍。
 
 永远爱你的，
-[大强]`;
+[大强]`; // 请替换成你的名字
 
         if (input === herBirthday) {
             document.getElementById('unlockForm').style.display = 'none';
             document.getElementById('letterContent').style.display = 'block';
             typeWriter('letter-text', letterText, 30);
-            for(let i = 0; i < 15; i++) { setTimeout(createHeart, i * 200); }
+            // 触发爱心雨
+            for(let i = 0; i < 15; i++) {
+                setTimeout(createHeart, i * 200);
+            }
         } else {
             alert("哎呀，好像不对哦，再想想看？😉");
         }
     };
 
     // --- 9. 全屏照片查看器 ---
-    const photoViewer = document.getElementById('photo-viewer'); const viewerImg = document.getElementById('viewer-img'); const closeBtn = document.querySelector('.close-viewer');
-    window.openPhotoViewer = function(src) { photoViewer.style.display = 'block'; viewerImg.src = src; };
-    function closeViewer() { photoViewer.style.display = 'none'; }
+    const photoViewer = document.getElementById('photo-viewer');
+    const viewerImg = document.getElementById('viewer-img');
+    const closeBtn = document.querySelector('.close-viewer');
+
+    window.openPhotoViewer = function(src) {
+        photoViewer.style.display = 'block';
+        viewerImg.src = src;
+    };
+
+    function closeViewer() {
+        photoViewer.style.display = 'none';
+    }
+
     closeBtn.onclick = closeViewer;
-    photoViewer.onclick = (e) => { if (e.target === photoViewer) { closeViewer(); } };
+    photoViewer.onclick = (e) => {
+        if (e.target === photoViewer) {
+            closeViewer();
+        }
+    };
+
 });

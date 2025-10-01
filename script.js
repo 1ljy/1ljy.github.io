@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 我爱你，不止三千遍。
 
 永远爱你的，
-[你的名字]`; // 请替换成你的名字
+[大强]`; // 请替换成你的名字
 
         if (input === herBirthday) {
             document.getElementById('unlockForm').style.display = 'none';

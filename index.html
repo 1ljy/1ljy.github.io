@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>致我最爱的你 | 三周年快乐</title>
 
-    <!-- 新增：预加载关键资源 -->
+    <!-- 预加载关键资源 -->
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="script.js" as="script">
     <link rel="preload" href="./fonts/DancingScript-Bold.ttf" as="font" type="font/ttf" crossorigin>
@@ -18,11 +18,20 @@
             font-style: normal;
             font-weight: 700;
             src: local('Dancing Script Bold'), local('DancingScript-Bold'), url('./fonts/DancingScript-Bold.ttf') format('truetype');
-            font-display: swap; /* 新增：优化字体加载 */
+            font-display: swap;
         }
     </style>
 </head>
 <body>
+
+    <!-- 【新增】全屏加载遮罩 -->
+    <div id="loading-mask">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p id="loading-text">正在准备浪漫...</p>
+            <button id="manual-play-btn" style="display: none;">点击播放音乐</button>
+        </div>
+    </div>
 
     <!-- 1. 动态星空背景 -->
     <div id="particles-js"></div>
@@ -33,10 +42,10 @@
     <!-- 3. 爱心雨容器 -->
     <div id="hearts-rain"></div>
 
- <!-- 4. 背景音乐 (优化：恢复直接加载以实现即时播放) -->
-<audio id="bgMusic" autoplay muted loop>
-    <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
-</audio>
+    <!-- 4. 背景音乐 (关键修改：移除 autoplay 和 muted，由JS控制) -->
+    <audio id="bgMusic" loop>
+        <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- 5. 导航栏 -->
     <header>

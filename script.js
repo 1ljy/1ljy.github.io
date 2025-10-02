@@ -5,11 +5,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingText = document.getElementById('loading-text');
     const manualPlayBtn = document.getElementById('manual-play-btn');
 
+    if (!bgMusic || !loadingMask || !loadingText || !manualPlayBtn) {
+        console.error("关键元素未找到，页面可能无法正常工作！");
+        if(loadingMask) loadingMask.style.display = 'none';
+        document.body.classList.add('page-loaded');
+        return;
+    }
+
     bgMusic.volume = 0.4;
+
+    // 【新增】安全网：10秒后强制显示页面，防止用户卡死
+    const safetyTimeout = setTimeout(() => {
+        console.warn("Safety timeout triggered! Forcing page to show.");
+        hideLoadingMask();
+    }, 10000); // 10秒
 
     // --- 核心函数：初始化音乐和页面 ---
     function initMusicAndPage() {
-        loadingText.textContent = "正在加载音乐...";
+        loadingText.textContent = "正在准备浪漫...";
         
         // 尝试播放音乐
         const playPromise = bgMusic.play();
@@ -40,6 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 隐藏加载遮罩，显示页面 ---
     function hideLoadingMask() {
+        // 【修改】清除安全网计时器
+        clearTimeout(safetyTimeout);
+        
         loadingMask.style.opacity = '0';
         setTimeout(() => {
             loadingMask.style.display = 'none';

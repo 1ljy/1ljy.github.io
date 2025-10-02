@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!bgMusic || !loadingMask || !loadingText || !manualPlayBtn) {
         console.error("关键元素未找到，页面可能无法正常工作！");
         if(loadingMask) loadingMask.style.display = 'none';
+        // 如果元素没找到，也要显示页面
         document.body.classList.add('page-loaded');
         return;
     }
@@ -56,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 【修改】清除安全网计时器
         clearTimeout(safetyTimeout);
         
+        // 【关键修改】显示页面内容！
+        document.body.classList.add('page-loaded');
+
         loadingMask.style.opacity = '0';
         setTimeout(() => {
             loadingMask.style.display = 'none';

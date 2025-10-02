@@ -3,23 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgMusic = document.getElementById('bgMusic');
     const loadingMask = document.getElementById('loading-mask');
     const loadingText = document.getElementById('loading-text');
-    const manualPlayBtn = document.getElementById('manual-play-btn');
-
-    if (!bgMusic || !loadingMask || !loadingText || !manualPlayBtn) {
-        console.error("关键元素未找到，页面可能无法正常工作！");
-        if(loadingMask) loadingMask.style.display = 'none';
-        // 如果元素没找到，也要显示页面
-        document.body.classList.add('page-loaded');
-        return;
-    }
 
     bgMusic.volume = 0.4;
-
-    // 【新增】安全网：10秒后强制显示页面，防止用户卡死
-    const safetyTimeout = setTimeout(() => {
-        console.warn("Safety timeout triggered! Forcing page to show.");
-        hideLoadingMask();
-    }, 10000); // 10秒
 
     // --- 核心函数：初始化音乐和页面 ---
     function initMusicAndPage() {
@@ -30,34 +15,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (playPromise !== undefined) {
             playPromise.then(_ => {
-                // 播放成功！
+                // 播放成功！显示页面
                 console.log("音乐自动播放成功！");
                 hideLoadingMask();
             }).catch(error => {
-                // 播放失败（被浏览器阻止）
+                // 播放失败，就停在加载页面，不做任何事
                 console.error("音乐自动播放被阻止:", error);
-                loadingText.textContent = "浏览器需要您的许可才能播放音乐";
-                manualPlayBtn.style.display = 'block'; // 显示手动播放按钮
-                
-                manualPlayBtn.onclick = () => {
-                    bgMusic.play().then(_ => {
-                        console.log("用户手动播放成功！");
-                        hideLoadingMask();
-                    }).catch(err => {
-                        console.error("手动播放也失败了:", err);
-                        loadingText.textContent = "音乐播放失败，请检查网络或刷新页面。";
-                    });
-                };
+                loadingText.textContent = "音乐播放失败，请刷新页面重试。";
             });
         }
     }
 
     // --- 隐藏加载遮罩，显示页面 ---
     function hideLoadingMask() {
-        // 【修改】清除安全网计时器
-        clearTimeout(safetyTimeout);
-        
-        // 【关键修改】显示页面内容！
+        // 【关键修复】显示页面内容！
         document.body.classList.add('page-loaded');
 
         loadingMask.style.opacity = '0';

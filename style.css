@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
     background-color: #121212;
     color: #e0e0e0;
     overflow-x: hidden;
@@ -139,8 +139,122 @@ p {
     margin-bottom: 16px;
 }
 
-/* --- 视图1: 时间轴 (保持不变，因为之前已优化) --- */
-/* ... 时间轴样式保持不变 ... */
+/* --- 视图1: 时间轴 (恢复左右交替布局) --- */
+.hero-text {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.hero-text p {
+    color: #ccc;
+    font-size: 1.2em;
+}
+
+.timeline-container {
+    position: relative;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e91e63;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 50px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 【关键】时间轴点，始终居中 */
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    background: #e91e63;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    border: 4px solid #121212;
+    z-index: 2;
+}
+
+/* 【关键】内容区域，左右交替 */
+.timeline-content {
+    width: calc(50% - 40px);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 奇数项，内容在右侧 */
+.timeline-item:nth-child(odd) .timeline-content {
+    margin-left: auto;
+    text-align: left;
+}
+
+/* 偶数项，内容在左侧 */
+.timeline-item:nth-child(even) .timeline-content {
+    margin-right: auto;
+    text-align: right;
+}
+
+/* 奇数项，点在内容左边 */
+.timeline-item:nth-child(odd) .timeline-dot {
+    left: 0;
+}
+
+/* 偶数项，点在内容右边 */
+.timeline-item:nth-child(even) .timeline-dot {
+    left: calc(100% - 20px);
+}
+
+.timeline-content h3 {
+    color: #e91e63;
+    margin-bottom: 10px;
+}
+
+.timeline-content .date {
+    color: #aaa;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+.photo-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.photo-wrapper img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.photo-wrapper img:hover {
+    transform: scale(1.03);
+}
 
 /* --- 视图2: 一封情书 (优化布局和交互) --- */
 #letter-view .content-card {
@@ -469,6 +583,25 @@ p {
 
 /* --- 移动端适配 (小于768px) --- */
 @media (max-width: 768px) {
+    .timeline-item {
+        flex-direction: column;
+    }
+    
+    .timeline-content {
+        width: 100%;
+        text-align: left !important; /* 移动端统一左对齐 */
+        margin: 0 0 0 30px !important; /* 为轴线留出空间 */
+    }
+
+    .timeline-dot {
+        left: 15px !important; /* 移动端点固定在左侧 */
+        top: 10px;
+    }
+
+    .timeline-line {
+        left: 25px; /* 轴线也跟着移动 */
+    }
+
     .content-card {
         padding: 25px 20px;
     }

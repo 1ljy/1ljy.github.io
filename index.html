@@ -24,12 +24,11 @@
 </head>
 <body>
 
-    <!-- 【新增】全屏加载遮罩 -->
+    <!-- 全屏加载遮罩 -->
     <div id="loading-mask">
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <p id="loading-text">正在准备浪漫...</p>
-            <button id="manual-play-btn" style="display: none;">点击播放音乐</button>
         </div>
     </div>
 
@@ -42,7 +41,7 @@
     <!-- 3. 爱心雨容器 -->
     <div id="hearts-rain"></div>
 
-    <!-- 4. 背景音乐 (关键修改：移除 autoplay 和 muted，由JS控制) -->
+    <!-- 4. 背景音乐 -->
     <audio id="bgMusic" loop>
         <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
     </audio>
@@ -109,23 +108,6 @@
                         <p>和你一起看的风景，才叫风景。山海辽阔，都不及你眼里的星河。</p>
                     </div>
                 </div>
-
-                <!-- 在这里可以继续添加更多的记忆点 -->
-                <!-- 例如：
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h3>新标题</h3>
-                        <p class="date">日期</p>
-                        <div class="photo-wrapper">
-                            <img src="images/xxx.jpg" alt="描述" loading="lazy" onclick="openPhotoViewer('images/xxx.jpg')">
-                            <img src="images/yyy.jpg" alt="描述" loading="lazy" onclick="openPhotoViewer('images/yyy.jpg')">
-                        </div>
-                        <p>描述文字...</p>
-                    </div>
-                </div>
-                -->
-
             </div>
         </section>
 
@@ -162,69 +144,68 @@
         </section>
 
         <!-- 视图4: 默契大考验游戏页 -->
-<section id="game-view" class="view">
-    <div class="content-card">
-        <h1>默契大考验 ❤️</h1>
-        <p>看看我们有多了解彼此！</p>
-        
-        <!-- 游戏开始界面 -->
-        <div id="game-start">
-            <p>准备好了吗？</p>
-            <button id="start-game-btn">开始游戏</button>
-        </div>
+        <section id="game-view" class="view">
+            <div class="content-card">
+                <h1>默契大考验 ❤️</h1>
+                <p>看看我们有多了解彼此！</p>
+                
+                <!-- 游戏开始界面 -->
+                <div id="game-start">
+                    <p>准备好了吗？</p>
+                    <button id="start-game-btn">开始游戏</button>
+                </div>
 
-        <!-- 游戏进行界面 -->
-        <div id="game-play" style="display: none;">
-            <div class="question-container">
-                <h2 id="question-text">问题将在这里显示</h2>
+                <!-- 游戏进行界面 -->
+                <div id="game-play" style="display: none;">
+                    <div class="question-container">
+                        <h2 id="question-text">问题将在这里显示</h2>
+                    </div>
+                    <div class="options-container" id="options-container">
+                        <!-- 选项将由JS动态生成 -->
+                    </div>
+                    <div class="game-progress">
+                        <span id="progress-text">1 / 5</span>
+                    </div>
+                </div>
+
+                <!-- 游戏结果界面 -->
+                <div id="game-result" style="display: none;">
+                    <h2>测试完成！</h2>
+                    <p>你们的默契值是：</p>
+                    <div class="score-display">
+                        <span id="score-value">0</span>%
+                    </div>
+                    <p id="result-message"></p>
+                    <button id="restart-game-btn">再玩一次</button>
+                </div>
             </div>
-            <div class="options-container" id="options-container">
-                <!-- 选项将由JS动态生成 -->
+        </section>
+
+        <!-- 视图5: 星空下的誓言 -->
+        <section id="constellation-view" class="view">
+            <div class="content-card">
+                <h1>星空下的誓言 ✨</h1>
+                <p>用星辰，画出我们共同的答案。</p>
+                
+                <!-- 游戏画布容器 -->
+                <div id="game-canvas-container">
+                    <!-- 【修改】用一个div替代canvas -->
+                    <div id="star-interaction-area"></div>
+                    <!-- 引导星星层和提示信息保持不变 -->
+                    <div id="guide-stars-container"></div>
+                    <div id="game-hint">
+                        <p id="hint-text">点击“开始”，点亮属于我们的第一颗星</p>
+                    </div>
+                </div>
+
+                <!-- 游戏控制按钮 -->
+                <div id="game-controls">
+                    <button id="start-canvas-btn">开始绘制</button>
+                    <button id="check-answer-btn" style="display: none;">提交答案</button>
+                    <button id="next-level-btn" style="display: none;">下一题</button>
+                </div>
             </div>
-            <div class="game-progress">
-                <span id="progress-text">1 / 5</span>
-            </div>
-        </div>
-
-        <!-- 游戏结果界面 -->
-        <div id="game-result" style="display: none;">
-            <h2>测试完成！</h2>
-            <p>你们的默契值是：</p>
-            <div class="score-display">
-                <span id="score-value">0</span>%
-            </div>
-            <p id="result-message"></p>
-            <button id="restart-game-btn">再玩一次</button>
-        </div>
-    </div>
-</section>
-
-<!-- 视图5: 星空下的誓言 -->
-<section id="constellation-view" class="view">
-    <div class="content-card">
-        <h1>星空下的誓言 ✨</h1>
-        <p>用星辰，画出我们共同的答案。</p>
-        
-        <!-- 游戏画布容器 -->
-        <div id="game-canvas-container">
-            <canvas id="star-canvas"></canvas>
-            <div id="guide-stars-container"></div> 
-            <!-- 提示信息 -->
-            <div id="game-hint">
-                <p id="hint-text">点击“开始”，点亮属于我们的第一颗星</p>
-            </div>
-        </div>
-
-        <!-- 游戏控制按钮 -->
-        <div id="game-controls">
-            <button id="start-canvas-btn">开始绘制</button>
-            <button id="check-answer-btn" style="display: none;">提交答案</button>
-            <button id="next-level-btn" style="display: none;">下一题</button>
-        </div>
-    </div>
-</section>
-
-
+        </section>
     </main>
 
     <!-- 全屏照片查看器 -->

@@ -309,16 +309,16 @@ p {
     overflow-y: auto;
 }
 
-/* 【关键】优化信件阅读体验 */
+/* 【修改】使用系统默认手写字体 */
 #letter-text {
-    font-family: 'Georgia', 'Times New Roman', serif; /* 【关键】换用更经典的衬线字体，更像信件 */
-    font-size: 1.2rem; /* 【关键】减小字号，让每行字数更合理 */
-    line-height: 2; /* 【关键】增加行高，让段落更透气 */
+    font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif; /* 优先使用苹果和微软的字体，它们在微信中表现最好 */
+    font-size: 1.2rem;
+    line-height: 2;
     white-space: pre-wrap;
     text-align: left;
-    color: #333; /* 深色墨水 */
-    /* 移除了背景色和内边距，直接使用容器的样式 */
+    color: #333;
 }
+
 
 
 /* --- 视图3: 未来约定 --- */

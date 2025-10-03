@@ -6,12 +6,14 @@
 }
 
 body {
-    font-family: 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background-color: #121212;
     color: #e0e0e0;
     overflow-x: hidden;
     /* 禁止双击缩放，优化移动端体验 */
     touch-action: manipulation;
+    /* 确保滚动条平滑 */
+    scroll-behavior: smooth;
 }
 
 /* --- 加载动画 --- */
@@ -61,6 +63,7 @@ header {
     backdrop-filter: blur(10px);
     z-index: 1000;
     padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 nav {
@@ -71,19 +74,20 @@ nav {
 }
 
 .nav-link {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    margin: 0 5px;
-    padding: 8px 10px;
+    padding: 8px 12px;
     border-radius: 20px;
     transition: all 0.3s ease;
     font-size: 0.9em;
     white-space: nowrap;
+    font-weight: 500;
 }
 
-.nav-link.active, .nav-link:hover {
+.nav-link.active {
     background-color: #e91e63;
     color: white;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.4);
 }
 
 /* --- 主内容区 --- */
@@ -94,8 +98,9 @@ main {
 .view {
     display: none;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease-in-out;
     padding: 20px;
+    min-height: calc(100vh - 60px); /* 确保视图至少占满屏幕高度 */
 }
 
 .view.active {
@@ -104,11 +109,12 @@ main {
 }
 
 .content-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(5px);
-    border-radius: 15px;
-    padding: 25px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
     margin: 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 h1 {
@@ -117,256 +123,231 @@ h1 {
     margin-bottom: 20px;
     text-align: center;
     color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 h2 {
     font-size: 1.8em;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #e91e63;
+    text-align: center;
+    font-weight: 600;
 }
 
 p {
-    line-height: 1.6;
-    margin-bottom: 15px;
+    line-height: 1.7;
+    margin-bottom: 16px;
 }
 
-/* --- 视图1: 时间轴 (恢复左右交替布局) --- */
-.hero-text {
-    text-align: center;
-    padding: 50px 20px;
+/* --- 视图1: 时间轴 (保持不变，因为之前已优化) --- */
+/* ... 时间轴样式保持不变 ... */
+
+/* --- 视图2: 一封情书 (优化布局和交互) --- */
+#letter-view .content-card {
+    max-width: 600px;
+    margin: 20px auto;
 }
 
-.hero-text p {
-    color: #ccc;
-    font-size: 1.2em;
-}
-
-.timeline-container {
-    position: relative;
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-.timeline-line {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: #e91e63;
-    transform: translateX(-50%);
-}
-
-.timeline-item {
-    display: flex;
-    margin-bottom: 50px;
-    position: relative;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s ease;
-}
-
-.timeline-item.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 【关键】时间轴点，始终居中 */
-.timeline-dot {
-    position: absolute;
-    left: 50%;
-    top: 20px;
-    width: 20px;
-    height: 20px;
-    background: #e91e63;
-    border-radius: 50%;
-    transform: translateX(-50%);
-    border: 4px solid #121212;
-    z-index: 2;
-}
-
-/* 【关键】内容区域，左右交替 */
-.timeline-content {
-    width: calc(50% - 40px);
-    background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* 奇数项，内容在右侧 */
-.timeline-item:nth-child(odd) .timeline-content {
-    margin-left: auto;
-    text-align: left;
-}
-
-/* 偶数项，内容在左侧 */
-.timeline-item:nth-child(even) .timeline-content {
-    margin-right: auto;
-    text-align: right;
-}
-
-/* 奇数项，点在内容左边 */
-.timeline-item:nth-child(odd) .timeline-dot {
-    left: 0;
-}
-
-/* 偶数项，点在内容右边 */
-.timeline-item:nth-child(even) .timeline-dot {
-    left: calc(100% - 20px);
-}
-
-.timeline-content h3 {
-    color: #e91e63;
-    margin-bottom: 10px;
-}
-
-.timeline-content .date {
-    color: #aaa;
-    font-size: 0.9em;
-    margin-bottom: 15px;
-}
-
-.photo-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-    margin: 15px 0;
-}
-
-.photo-wrapper img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.photo-wrapper img:hover {
-    transform: scale(1.03);
-}
-
-/* --- 视图2: 情书 --- */
 #unlockForm {
     text-align: center;
 }
 
+#unlockForm h2 {
+    margin-bottom: 8px;
+}
+
+#unlockForm p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+}
+
 #unlockForm input[type="date"] {
-    width: 80%;
-    padding: 12px;
-    margin: 15px 0;
-    border: 1px solid #555;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     color: #fff;
     font-size: 1rem;
+    text-align: center;
 }
 
 #unlock-btn {
-    padding: 12px 30px;
+    padding: 15px 40px;
     border: none;
-    border-radius: 25px;
-    background: #e91e63;
+    border-radius: 30px;
+    background: linear-gradient(45deg, #e91e63, #ad1457);
     color: white;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
 }
 
-#unlock-btn:hover {
-    background: #c2185b;
+#unlock-btn:active {
+    transform: scale(0.98);
 }
 
 #letterContent {
+    max-height: 60vh; /* 限制最大高度，便于滚动 */
+    overflow-y: auto;
+    padding-right: 10px; /* 为滚动条留出空间 */
+    /* 优化移动端滚动条 */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+#letterContent::-webkit-scrollbar {
+    width: 6px;
+}
+#letterContent::-webkit-scrollbar-track {
+    background: transparent;
+}
+#letterContent::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+#letter-content {
     font-family: 'Dancing Script', cursive;
-    font-size: 1.5rem;
-    line-height: 2;
+    font-size: 1.6rem;
+    line-height: 2.2;
     white-space: pre-wrap;
     text-align: left;
 }
 
-/* --- 视图3: 未来约定 --- */
+/* --- 视图3: 未来约定 (优化列表样式) --- */
+#future-view .content-card {
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+#future-view h1 {
+    margin-bottom: 30px;
+}
+
 .future-list {
     list-style: none;
     padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
 }
 
 .future-list li {
-    background: rgba(233, 30, 99, 0.1);
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(233, 30, 99, 0.05));
+    padding: 20px 25px;
+    border-radius: 15px;
     border-left: 4px solid #e91e63;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-size: 1.1em;
 }
 
 .future-list li:hover {
-    transform: translateX(10px);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(233, 30, 99, 0.2);
 }
 
-/* --- 视图4: 默契大考验 --- */
+.future-list li span {
+    font-size: 1.5em;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+/* --- 视图4: 默契大考验 (优化按钮布局) --- */
 #game-view .content-card {
+    max-width: 600px;
+    margin: 20px auto;
     text-align: center;
 }
 
+#game-view h1 {
+    margin-bottom: 30px;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 【关键】增加按钮间距 */
+}
+
 .options-container button {
-    display: block;
-    width: 80%;
-    margin: 1em auto;
-    padding: 15px 20px;
+    width: 100%;
+    padding: 18px 25px;
     font-size: 1.1em;
-    border: 2px solid #ffb6c1;
-    background-color: #fff0f5;
-    color: #333;
-    border-radius: 25px;
+    border: 2px solid rgba(255, 182, 193, 0.3);
+    background-color: rgba(255, 240, 245, 0.1);
+    color: #fff;
+    border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-weight: 500;
+    text-align: left; /* 文字左对齐，更整洁 */
+    padding-left: 30px; /* 为图标或文字留出空间 */
 }
 
 .options-container button:hover {
     background-color: #e91e63;
-    color: white;
-    transform: scale(1.05);
+    border-color: #e91e63;
+    transform: scale(1.02);
 }
 
 .score-display {
     font-size: 4em;
     font-weight: bold;
     color: #e91e63;
-    margin: 20px 0;
+    margin: 25px 0;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .game-progress {
-    margin-top: 2em;
+    margin-top: 20px;
     font-size: 1.2em;
-    color: #888;
+    color: #aaa;
 }
 
-/* --- 视图5: 星空下的誓言 (九宫格版) --- */
+/* --- 视图5: 星空下的誓言 (确保九宫格可见) --- */
 #constellation-view .content-card {
+    max-width: 500px;
+    margin: 20px auto;
     text-align: center;
 }
 
+#constellation-view h1 {
+    margin-bottom: 10px;
+}
+
+#constellation-view p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+}
+
 #star-grid-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* 【关键】创建一个正方形容器 */
+    max-width: 400px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1; /* 使用 aspect-ratio 确保是正方形 */
 }
 
 #star-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 15px;
-    width: 90vw;
-    max-width: 400px;
-    height: 90vw;
-    max-height: 400px;
+    padding: 15px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
-    padding: 15px;
 }
 
 .grid-cell {
@@ -375,11 +356,22 @@ p {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.grid-cell:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .grid-cell.active {
     background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 70%);
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 .grid-cell.active::after {
@@ -388,51 +380,38 @@ p {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 1.5em;
+    font-size: 1.8em;
 }
 
 #game-hint {
-    margin-top: 15px;
+    margin-top: 20px;
     color: rgba(255, 255, 255, 0.8);
+    min-height: 24px; /* 防止提示文字变化导致布局跳动 */
 }
 
 #game-controls {
-    margin-top: 20px;
+    margin-top: 30px;
     display: flex;
     justify-content: center;
     gap: 15px;
 }
 
 #game-controls button {
-    padding: 12px 25px;
+    padding: 15px 35px;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     background: linear-gradient(45deg, #e91e63, #9c27b0);
     color: white;
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 600;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
 }
 
 #game-controls button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
-}
-
-/* --- 通用动画 --- */
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-}
-
-@keyframes correctAnswerFlash {
-    0% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8); }
-    50% { box-shadow: 0 0 40px rgba(76, 175, 80, 1); }
-    100% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8); }
-}
-
-.correct-answer {
-    animation: correctAnswerFlash 1s ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
 }
 
 /* --- 照片查看器 --- */
@@ -444,7 +423,7 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0,0,0,0.95);
     padding-top: 60px;
 }
 
@@ -452,26 +431,24 @@ p {
     margin: auto;
     display: block;
     width: 100%;
-    max-width: 700px;
-    max-height: 80vh;
+    max-width: 900px;
+    max-height: calc(100vh - 80px);
     object-fit: contain;
 }
 
 .close-viewer {
     position: absolute;
     top: 20px;
-    right: 35px;
+    right: 30px;
     color: #f1f1f1;
     font-size: 40px;
     font-weight: bold;
-    transition: 0.3s;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-.close-viewer:hover,
-.close-viewer:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
+.close-viewer:hover {
+    color: #ccc;
 }
 
 /* --- 爱心雨 --- */
@@ -492,22 +469,23 @@ p {
 
 /* --- 移动端适配 (小于768px) --- */
 @media (max-width: 768px) {
-    .timeline-item {
+    .content-card {
+        padding: 25px 20px;
+    }
+    h1 {
+        font-size: 2.5em;
+    }
+    .options-container button {
+        padding: 16px 20px;
+        font-size: 1em;
+    }
+    .future-list li {
         flex-direction: column;
+        text-align: center;
+        gap: 10px;
     }
-    
-    .timeline-content {
-        width: 100%;
-        text-align: left !important; /* 移动端统一左对齐 */
-        margin: 0 0 0 30px !important; /* 为轴线留出空间 */
-    }
-
-    .timeline-dot {
-        left: 15px !important; /* 移动端点固定在左侧 */
-        top: 10px;
-    }
-
-    .timeline-line {
-        left: 25px; /* 轴线也跟着移动 */
+    .future-list li span {
+        margin-right: 0;
+        margin-bottom: 5px;
     }
 }

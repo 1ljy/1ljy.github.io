@@ -361,56 +361,104 @@ p {
     flex-shrink: 0;
 }
 
-/* --- 视图4: 默契大考验 --- */
+/* --- 视图4: 默契大考验 (美化版) --- */
 #game-view .content-card {
     max-width: 600px;
     margin: 20px auto;
     text-align: center;
+    background: rgba(255, 255, 255, 0.08); /* 稍微提亮背景 */
 }
 
 #game-view h1 {
     margin-bottom: 30px;
+    font-size: 2.5em; /* 标题可以稍微大一点 */
+    text-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);
 }
 
+/* 【关键】美化所有按钮 */
+.game-btn {
+    display: inline-block; /* 改为行内块，便于控制对齐和间距 */
+    padding: 16px 40px; /* 增加内边距，让按钮更饱满 */
+    margin: 10px; /* 增加外边距，让按钮之间有呼吸感 */
+    border: none;
+    border-radius: 50px; /* 更圆润的胶囊形状 */
+    background: linear-gradient(45deg, #f093fb, #f5576c); /* 使用更时尚的渐变色 */
+    color: white;
+    font-size: 1.2rem; /* 增大字号 */
+    font-weight: 700; /* 增加字重，让字体更清晰有力 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    text-transform: uppercase; /* 转换为大写字母，更有设计感 */
+    letter-spacing: 1px; /* 增加字母间距 */
+}
+
+.game-btn:hover {
+    transform: translateY(-3px); /* 增加悬停上移距离 */
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+}
+
+.game-btn:active {
+    transform: translateY(-1px); /* 点击时轻微下移，提供反馈 */
+}
+
+/* 应用到具体按钮 */
+#start-game-btn, #restart-game-btn {
+    @extend .game-btn;
+}
+
+/* 选项按钮样式 */
 .options-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-top: 20px;
 }
 
 .options-container button {
     width: 100%;
     padding: 18px 25px;
-    font-size: 1.1em;
-    border: 2px solid rgba(255, 182, 193, 0.3);
-    background-color: rgba(255, 240, 245, 0.1);
+    font-size: 1.1rem;
+    border: 2px solid rgba(240, 147, 251, 0.3); /* 使用与主色调呼应的边框色 */
+    background-color: rgba(255, 255, 255, 0.05);
     color: #fff;
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
     text-align: left;
-    padding-left: 30px;
+    padding-left: 20px;
 }
 
 .options-container button:hover {
-    background-color: #e91e63;
-    border-color: #e91e63;
+    background-color: rgba(240, 147, 251, 0.2);
+    border-color: rgba(240, 147, 251, 0.6);
     transform: scale(1.02);
 }
 
+/* 分数和进度样式 */
 .score-display {
-    font-size: 4em;
-    font-weight: bold;
-    color: #e91e63;
+    font-size: 4.5em; /* 增大分数字号，更醒目 */
+    font-weight: 800; /* 更粗的字重 */
+    color: #f5576c; /* 使用渐变色中的主色调 */
     margin: 25px 0;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .game-progress {
     margin-top: 20px;
     font-size: 1.2em;
-    color: #aaa;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+/* 结果消息样式 */
+#result-message {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #f093fb;
+    margin-top: 15px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 /* --- 视图5: 星空下的誓言 --- */

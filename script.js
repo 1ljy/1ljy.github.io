@@ -7,7 +7,7 @@ const gameQuestions = [
     {
         question: "我最喜欢的电影类型是？",
         options: ["科幻片", "爱情片", "喜剧片", "悬疑片"],
-        correctAnswer: 1
+        correctAnswer: 0
     },
     {
         question: "我们第一次约会的餐厅叫什么？",
@@ -267,6 +267,10 @@ function showResult() {
         message = "看来你需要多了解我一点啦！😜";
     }
     document.getElementById('result-message').innerText = message;
+
+    const restartBtn = document.getElementById('restart-game-btn');
+    restartBtn.textContent = '再玩一次'; // 确保文字是中文
+    restartBtn.className = 'game-btn'; // 应用新样式
 }
 
 

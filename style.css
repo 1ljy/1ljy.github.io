@@ -10,9 +10,7 @@ body {
     background-color: #121212;
     color: #e0e0e0;
     overflow-x: hidden;
-    /* 禁止双击缩放，优化移动端体验 */
     touch-action: manipulation;
-    /* 确保滚动条平滑 */
     scroll-behavior: smooth;
 }
 
@@ -53,7 +51,7 @@ body {
     color: #e0e0e0;
 }
 
-/* --- 导航栏 (移动端优化) --- */
+/* --- 导航栏 --- */
 header {
     position: fixed;
     top: 0;
@@ -92,7 +90,7 @@ nav {
 
 /* --- 主内容区 --- */
 main {
-    padding-top: 60px; /* 为固定导航栏留出空间 */
+    padding-top: 60px;
 }
 
 .view {
@@ -100,7 +98,7 @@ main {
     opacity: 0;
     transition: opacity 0.4s ease-in-out;
     padding: 20px;
-    min-height: calc(100vh - 60px); /* 确保视图至少占满屏幕高度 */
+    min-height: calc(100vh - 60px);
 }
 
 .view.active {
@@ -139,7 +137,7 @@ p {
     margin-bottom: 16px;
 }
 
-/* --- 视图1: 时间轴 (恢复左右交替布局) --- */
+/* --- 视图1: 时间轴 --- */
 .hero-text {
     text-align: center;
     padding: 50px 20px;
@@ -181,7 +179,6 @@ p {
     transform: translateY(0);
 }
 
-/* 【关键】时间轴点，始终居中 */
 .timeline-dot {
     position: absolute;
     left: 50%;
@@ -195,7 +192,6 @@ p {
     z-index: 2;
 }
 
-/* 【关键】内容区域，左右交替 */
 .timeline-content {
     width: calc(50% - 40px);
     background: rgba(255, 255, 255, 0.05);
@@ -204,24 +200,20 @@ p {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* 奇数项，内容在右侧 */
 .timeline-item:nth-child(odd) .timeline-content {
     margin-left: auto;
     text-align: left;
 }
 
-/* 偶数项，内容在左侧 */
 .timeline-item:nth-child(even) .timeline-content {
     margin-right: auto;
     text-align: right;
 }
 
-/* 奇数项，点在内容左边 */
 .timeline-item:nth-child(odd) .timeline-dot {
     left: 0;
 }
 
-/* 偶数项，点在内容右边 */
 .timeline-item:nth-child(even) .timeline-dot {
     left: calc(100% - 20px);
 }
@@ -237,6 +229,7 @@ p {
     margin-bottom: 15px;
 }
 
+/* 【关键】图片自适应 */
 .photo-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -250,16 +243,20 @@ p {
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.3s ease;
+    display: block; /* 确保图片是块级元素，避免底部空隙 */
 }
 
 .photo-wrapper img:hover {
     transform: scale(1.03);
 }
 
-/* --- 视图2: 一封情书 (优化布局和交互) --- */
+/* --- 视图2: 一封情书 (修复信件格式) --- */
 #letter-view .content-card {
     max-width: 600px;
     margin: 20px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 #unlockForm {
@@ -281,7 +278,7 @@ p {
     padding: 15px;
     margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     color: #fff;
     font-size: 1rem;
@@ -306,33 +303,25 @@ p {
 }
 
 #letterContent {
-    max-height: 60vh; /* 限制最大高度，便于滚动 */
-    overflow-y: auto;
-    padding-right: 10px; /* 为滚动条留出空间 */
-    /* 优化移动端滚动条 */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-#letterContent::-webkit-scrollbar {
-    width: 6px;
-}
-#letterContent::-webkit-scrollbar-track {
-    background: transparent;
-}
-#letterContent::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
+    max-height: 60vh;
+    overflow-y: auto; /* 保留滚动功能，但移除自定义样式 */
 }
 
-#letter-content {
+/* 【关键】修复信件格式 */
+#letter-text {
     font-family: 'Dancing Script', cursive;
-    font-size: 1.6rem;
-    line-height: 2.2;
+    font-size: 1.8rem;
+    line-height: 2.5;
     white-space: pre-wrap;
     text-align: left;
+    color: #333;
+    background-color: #fdfaf6;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
 
-/* --- 视图3: 未来约定 (优化列表样式) --- */
+/* --- 视图3: 未来约定 --- */
 #future-view .content-card {
     max-width: 700px;
     margin: 20px auto;
@@ -372,7 +361,7 @@ p {
     flex-shrink: 0;
 }
 
-/* --- 视图4: 默契大考验 (优化按钮布局) --- */
+/* --- 视图4: 默契大考验 --- */
 #game-view .content-card {
     max-width: 600px;
     margin: 20px auto;
@@ -386,7 +375,7 @@ p {
 .options-container {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* 【关键】增加按钮间距 */
+    gap: 15px;
 }
 
 .options-container button {
@@ -400,8 +389,8 @@ p {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
-    text-align: left; /* 文字左对齐，更整洁 */
-    padding-left: 30px; /* 为图标或文字留出空间 */
+    text-align: left;
+    padding-left: 30px;
 }
 
 .options-container button:hover {
@@ -424,7 +413,7 @@ p {
     color: #aaa;
 }
 
-/* --- 视图5: 星空下的誓言 (确保九宫格可见) --- */
+/* --- 视图5: 星空下的誓言 --- */
 #constellation-view .content-card {
     max-width: 500px;
     margin: 20px auto;
@@ -443,10 +432,10 @@ p {
 #star-grid-container {
     position: relative;
     width: 100%;
-    padding-bottom: 100%; /* 【关键】创建一个正方形容器 */
+    padding-bottom: 100%;
     max-width: 400px;
     margin: 0 auto;
-    aspect-ratio: 1 / 1; /* 使用 aspect-ratio 确保是正方形 */
+    aspect-ratio: 1 / 1;
 }
 
 #star-grid {
@@ -500,7 +489,7 @@ p {
 #game-hint {
     margin-top: 20px;
     color: rgba(255, 255, 255, 0.8);
-    min-height: 24px; /* 防止提示文字变化导致布局跳动 */
+    min-height: 24px;
 }
 
 #game-controls {
@@ -547,7 +536,7 @@ p {
     width: 100%;
     max-width: 900px;
     max-height: calc(100vh - 80px);
-    object-fit: contain;
+    object-fit: contain; /* 【关键】确保图片在容器内自适应，不变形 */
 }
 
 .close-viewer {
@@ -581,7 +570,7 @@ p {
     }
 }
 
-/* --- 移动端适配 (小于768px) --- */
+/* --- 移动端适配 --- */
 @media (max-width: 768px) {
     .timeline-item {
         flex-direction: column;
@@ -589,17 +578,17 @@ p {
     
     .timeline-content {
         width: 100%;
-        text-align: left !important; /* 移动端统一左对齐 */
-        margin: 0 0 0 30px !important; /* 为轴线留出空间 */
+        text-align: left !important;
+        margin: 0 0 0 30px !important;
     }
 
     .timeline-dot {
-        left: 15px !important; /* 移动端点固定在左侧 */
+        left: 15px !important;
         top: 10px;
     }
 
     .timeline-line {
-        left: 25px; /* 轴线也跟着移动 */
+        left: 25px;
     }
 
     .content-card {

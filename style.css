@@ -414,7 +414,7 @@ main { padding-top: 80px; }
 }
 
 
-* --- 视图5: 星空下的誓言的样式 --- */
+/* --- 视图5: 星空下的誓言的样式 (移动端优化版) --- */
 #constellation-view .content-card {
     text-align: center;
     max-width: 900px;
@@ -437,7 +437,37 @@ main { padding-top: 80px; }
     position: absolute;
     top: 0;
     left: 0;
-    cursor: crosshair;
+    /* 移除了 cursor: crosshair */
+}
+
+/* 【新增】引导星星的样式 */
+#guide-stars-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 确保引导层不阻挡触摸事件 */
+}
+
+.guide-star {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+/* 【新增】触摸时的涟漪效果 */
+.touch-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* 涟漪效果不影响后续触摸 */
+    animation: ripple-animation 0.6s ease-out;
 }
 
 #game-hint {
@@ -455,6 +485,19 @@ main { padding-top: 80px; }
 @keyframes fadeInOut {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
+}
+
+/* 【新增】引导星星的脉冲动画 */
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
+}
+
+/* 【新增】触摸涟漪的扩散动画 */
+@keyframes ripple-animation {
+    from { width: 0; height: 0; opacity: 1; }
+    to { width: 100px; height: 100px; opacity: 0; }
 }
 
 #game-controls button {

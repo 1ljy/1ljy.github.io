@@ -4,32 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>致我最爱的你 | 三周年快乐</title>
-    
-    <!-- 预加载关键资源 -->
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="./fonts/DancingScript-Bold.woff2" as="font" type="font/woff2" crossorigin>
-    
-    <!-- 内联关键CSS -->
-    <style>
-        /* 首屏渲染必须的CSS */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        #loading-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .loading-spinner { width: 50px; height: 50px; border: 3px solid #333; border-top-color: #e91e63; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: #fff; margin-top: 20px; font-size: 1.2em; }
-        .main-container { display: none; }
-    </style>
-    
-    <!-- 异步加载非关键CSS -->
-    <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="style.css"></noscript>
-    
-    <!-- 预加载字体 -->
+    <link rel="stylesheet" href="style.css">
     <style>
         @font-face {
             font-family: 'Dancing Script';
-            font-style: normal;
-            font-weight: 700;
             src: url('./fonts/DancingScript-Bold.woff2') format('woff2');
             font-display: swap;
         }
@@ -39,159 +19,172 @@
 
     <!-- 全屏加载遮罩 -->
     <div id="loading-mask">
-        <div class="loading-spinner"></div>
-        <p class="loading-text">正在准备浪漫...</p>
-    </div>
-
-    <!-- 主容器 -->
-    <div class="main-container">
-        <!-- 1. 动态星空背景 -->
-        <div id="particles-js"></div>
-
-        <!-- 2. 背景音乐 -->
-        <audio id="bgMusic" loop>
-            <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
-        </audio>
-
-        <!-- 3. 导航栏 (移动端友好) -->
-        <header class="mobile-header">
-            <nav class="mobile-nav">
-                <div class="nav-item active" data-view="timeline">我们的故事</div>
-                <div class="nav-item" data-view="letter">一封情书</div>
-                <div class="nav-item" data-view="future">未来约定</div>
-                <div class="nav-item" data-view="game">默契大考验</div>
-                <div class="nav-item" data-view="constellation">星空下的誓言</div>
-            </nav>
-        </header>
-
-        <main class="mobile-main">
-            <!-- 视图1: 时间轴 -->
-            <section id="timeline-view" class="view active">
-                <div class="hero-text">
-                    <h1>From 2022.03.27 to Forever</h1>
-                    <p>已陪伴 <span class="days-counter"></span> 个日夜</p>
-                </div>
-                <div class="timeline-scroll">
-                    <div class="timeline-item">
-                        <div class="timeline-date">2021.08.08</div>
-                        <div class="timeline-content">
-                            <h3>初识 · 一切开始的地方</h3>
-                            <div class="photo-grid">
-                                <img src="images/photo1.webp" alt="第一次见面" loading="lazy">
-                            </div>
-                            <p>世界很大，幸好遇见...</p>
-                        </div>
-                    </div>
-                    <!-- 其他时间轴项目... -->
-                </div>
-            </section>
-
-            <!-- 视图2: 情书 -->
-            <section id="letter-view" class="view">
-                <div class="letter-container">
-                    <div id="unlockForm">
-                        <h2>这封信，只属于你</h2>
-                        <input type="date" id="birthdayInput" placeholder="输入你的生日">
-                        <button id="unlockBtn">解锁 ❤️</button>
-                    </div>
-                    <div id="letterContent" class="letter-content">
-                        <!-- 情书内容将由JS动态填充 -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- 视图3: 未来约定 -->
-            <section id="future-view" class="view">
-                <div class="future-list">
-                    <!-- ... -->
-                </div>
-            </section>
-
-            <!-- 视图4: 默契大考验 -->
-            <section id="game-view" class="view">
-                <!-- ... -->
-            </section>
-
-            <!-- 视图5: 星空下的誓言 -->
-            <section id="constellation-view" class="view">
-                <div class="constellation-container">
-                    <h1>星空下的誓言</h1>
-                    <div id="star-grid" class="star-grid">
-                        <!-- 九宫格将由JS动态生成 -->
-                    </div>
-                    <div class="game-controls">
-                        <button id="startGameBtn">开始绘制</button>
-                        <button id="checkAnswerBtn" style="display: none;">提交答案</button>
-                    </div>
-                    <div id="gameHint">点击“开始”，点亮属于我们的第一颗星</div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- 全屏照片查看器 -->
-    <div id="photoViewer" class="photo-viewer">
-        <div class="viewer-content">
-            <img id="viewerImg" src="" alt="">
-            <span class="close-viewer">&times;</span>
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p id="loading-text">正在准备浪漫...</p>
         </div>
     </div>
 
-    <!-- 异步加载JS -->
-    <script>
-        // 核心逻辑
-        (function() {
-            // 音乐自动播放策略
-            const bgMusic = document.getElementById('bgMusic');
-            const loadingMask = document.getElementById('loading-mask');
-            const loadingText = document.getElementById('loading-text');
-            const mainContainer = document.querySelector('.main-container');
-            
-            function init() {
-                loadingText.textContent = "正在准备浪漫...";
-                // 尝试播放音乐
-                const playPromise = bgMusic.play();
+    <!-- 1. 动态星空背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 2. 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="music/xiaoxingyun.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 3. 导航栏 (改为底部固定，更适合移动端) -->
+    <header class="mobile-header">
+        <nav class="mobile-nav">
+            <a href="#" class="nav-link active" data-target="timeline-view">我们的故事</a>
+            <a href="#" class="nav-link" data-target="letter-view">一封情书</a>
+            <a href="#" class="nav-link" data-target="future-view">未来约定</a>
+            <a href="#" class="nav-link" data-target="game-view">默契大考验</a>
+            <a href="#" class="nav-link" data-target="constellation-view">星空誓言</a>
+        </nav>
+    </header>
+
+    <main class="mobile-main">
+        <!-- 视图1: 时间轴 (改为垂直滚动) -->
+        <section id="timeline-view" class="view active">
+            <div class="hero-text">
+                <h1 id="typewriter"></h1>
+                <p>From 2022.03.27 to Forever (已陪伴 <span class="days-counter"></span> 个日夜)</p>
+            </div>
+            <div class="timeline-container">
+                <!-- 记忆点 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>初识 · 一切开始的地方</h3>
+                        <p class="date">2021年8月8日</p>
+                        <div class="photo-wrapper">
+                            <img src="images/photo1.jpg" alt="第一次见面" loading="lazy" onclick="openPhotoViewer('images/photo1.jpg')">
+                        </div>
+                        <p>世界很大，幸好遇见。那天，夏风漫过窗棂时，隔着距离，听见你的声音。没有画面，却记了很久。</p>
+                    </div>
+                </div>
+                <!-- 记忆点 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>心动 · 第一次约会</h3>
+                        <p class="date">2022年7月7日</p>
+                        <div class="photo-wrapper">
+                            <img src="images/photo2.jpg" alt="第一次约会 - 1" loading="lazy" onclick="openPhotoViewer('images/photo2.jpg')">
+                            <img src="images/photo2-2.jpg" alt="第一次约会 - 2" loading="lazy" onclick="openPhotoViewer('images/photo2-2.jpg')">
+                        </div>
+                        <p>笨拙的对话，藏不住的心跳。原来电影里的情节，真的会发生在自己身上。</p>
+                    </div>
+                </div>
+                <!-- 记忆点 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>同行 · 第一次旅行</h3>
+                        <p class="date">2023年1月17日</p>
+                        <div class="photo-wrapper">
+                            <img src="images/photo3.jpg" alt="第一次旅行 - 1" loading="lazy" onclick="openPhotoViewer('images/photo3.jpg')">
+                            <img src="images/photo3-2.jpg" alt="第一次旅行 - 2" loading="lazy" onclick="openPhotoViewer('images/photo3-2.jpg')">
+                            <img src="images/photo3-3.jpg" alt="第一次旅行 - 3" loading="lazy" onclick="openPhotoViewer('images/photo3-3.jpg')">
+                        </div>
+                        <p>和你一起看的风景，才叫风景。山海辽阔，都不及你眼里的星河。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视图2: 信件页 -->
+        <section id="letter-view" class="view">
+            <div class="content-card">
+                <div id="unlockForm">
+                    <h2>这封信，只属于你</h2>
+                    <p>请输入你的生日，解锁我为你写的话</p>
+                    <input type="date" id="birthdayInput">
+                    <button onclick="checkBirthday()">解锁 ❤️</button>
+                </div>
+                <div id="letterContent" style="display: none;">
+                    <h1>To My Dearest Love,</h1>
+                    <p id="letter-text"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视图3: 未来约定页 -->
+        <section id="future-view" class="view">
+            <div class="content-card">
+                <h1>Our Next Chapter</h1>
+                <p>我们未完待续的故事...</p>
+                <ul class="future-list">
+                    <li>🏔️ 去冰岛看极光，在星空下许愿</li>
+                    <li>🏠 一起装修我们的小家，每个角落都是爱</li>
+                    <li>🐻 养一只肥猫，看它在我们脚边长大</li>
+                    <li>💍 在一个只有我们知道的日子，给你一个家</li>
+                    <li>👨‍👩‍👧‍👦 组建我们自己的小家庭，听孩子叫我们爸爸妈妈</li>
+                    <li>👵🏻👴🏻 变成两个可爱的老头老太太，还手牵手去散步</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 视图4: 默契大考验游戏页 -->
+        <section id="game-view" class="view">
+            <div class="content-card">
+                <h1>默契大考验 ❤️</h1>
+                <p>看看我们有多了解彼此！</p>
                 
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        // 播放成功，隐藏加载界面
-                        loadingMask.style.opacity = '0';
-                        setTimeout(() => {
-                            loadingMask.style.display = 'none';
-                            mainContainer.style.display = 'block';
-                            initApp();
-                        }, 500);
-                    }).catch(error => {
-                        // 播放失败，显示手动播放按钮
-                        loadingText.innerHTML = "音乐播放失败<br><button id='manualPlayBtn'>点击播放音乐</button>";
-                        document.getElementById('manualPlayBtn').addEventListener('click', () => {
-                            bgMusic.play().then(initApp);
-                        });
-                    });
-                }
-            }
+                <div id="game-start">
+                    <p>准备好了吗？</p>
+                    <button id="start-game-btn">开始游戏</button>
+                </div>
 
-            // 初始化应用
-            function initApp() {
-                // 加载并初始化所有功能
-                loadScript('js/particles.min.js', () => {
-                    particlesJS('particles-js', {/* ... */});
-                });
-                // 其他初始化...
-            }
+                <div id="game-play" style="display: none;">
+                    <div class="question-container">
+                        <h2 id="question-text">问题将在这里显示</h2>
+                    </div>
+                    <div class="options-container" id="options-container">
+                        <!-- 选项将由JS动态生成 -->
+                    </div>
+                    <div class="game-progress">
+                        <span id="progress-text">1 / 5</span>
+                    </div>
+                </div>
 
-            // 按需加载JS的辅助函数
-            function loadScript(src, callback) {
-                const s = document.createElement('script');
-                s.src = src;
-                s.async = true;
-                s.onload = callback;
-                document.head.appendChild(s);
-            }
+                <div id="game-result" style="display: none;">
+                    <h2>测试完成！</h2>
+                    <p>你们的默契值是：</p>
+                    <div class="score-display">
+                        <span id="score-value">0</span>%
+                    </div>
+                    <p id="result-message"></p>
+                    <button id="restart-game-btn">再玩一次</button>
+                </div>
+            </div>
+        </section>
 
-            // 开始整个流程
-            init();
-        })();
-    </script>
+        <!-- 视图5: 星空下的誓言 (改为九宫格) -->
+        <section id="constellation-view" class="view">
+            <div class="content-card">
+                <h1>星空下的誓言 ✨</h1>
+                <p>用星辰，画出我们共同的答案。</p>
+                
+                <div id="star-grid-container">
+                    <div id="star-grid"></div>
+                    <div id="game-hint">点击“开始”，点亮属于我们的第一颗星</div>
+                </div>
+
+                <div id="game-controls">
+                    <button id="start-canvas-btn">开始绘制</button>
+                    <button id="check-answer-btn" style="display: none;">提交答案</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 全屏照片查看器 -->
+    <div id="photo-viewer" class="photo-viewer">
+        <span class="close-viewer">&times;</span>
+        <img class="viewer-content" id="viewer-img">
+    </div>
+
+    <!-- 引入本地脚本 -->
+    <script src="js/particles.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

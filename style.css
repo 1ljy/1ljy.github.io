@@ -1,77 +1,332 @@
-/* --- 全局与移动端基础 --- */
-* { box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow-x: hidden; background: #121212; color: #fff; font-size: 16px; }
+/* --- 全局与基础样式 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-/* --- 主容器与视图 --- */
-.main-container { display: none; }
-.view { display: none; min-height: 100vh; padding: 70px 15px 20px; opacity: 0; transition: opacity 0.3s; }
-.view.active { display: block; opacity: 1; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    overflow-x: hidden;
+    /* 禁止双击缩放 */
+    touch-action: manipulation;
+}
 
-/* --- 移动端导航 --- */
-.mobile-header { position: fixed; top: 0; left: 0; right: 0; background: rgba(18, 18, 18, 0.95); z-index: 100; backdrop-filter: blur(10px); }
-.mobile-nav { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 10px 0; scrollbar-width: none; }
-.mobile-nav::-webkit-scrollbar { display: none; }
-.nav-item { flex: 1 0 20%; text-align: center; padding: 10px; scroll-snap-align: center; white-space: nowrap; color: rgba(255,255,255,0.6); transition: all 0.3s; }
-.nav-item.active { color: #e91e63; border-bottom: 2px solid #e91e63; }
-.mobile-main { padding-top: 60px; }
+/* --- 加载动画 --- */
+#loading-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease;
+}
 
-/* --- 视图1: 时间轴 --- */
-.hero-text { text-align: center; padding: 20px 0; }
-.hero-text h1 { font-family: 'Dancing Script', cursive; font-size: 2.5em; margin-bottom: 10px; }
-.hero-text p { color: #ccc; }
-.timeline-scroll { max-height: calc(100vh - 180px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.timeline-item { background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 20px; padding: 15px; }
-.timeline-date { color: #e91e63; font-weight: bold; margin-bottom: 10px; }
-.timeline-content h3 { margin-bottom: 10px; }
-.photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
-.photo-grid img { width: 100%; border-radius: 8px; }
+.loading-content {
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #333;
+    border-top: 3px solid #e91e63;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-text {
+    color: #e0e0e0;
+}
+
+/* --- 移动端导航栏 --- */
+.mobile-header {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-top: 1px solid #333;
+}
+
+.mobile-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-align: center;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-link.active, .nav-link:hover {
+    color: #e91e63;
+}
+
+/* --- 主内容区 --- */
+.mobile-main {
+    padding-bottom: 60px; /* 为底部导航留出空间 */
+}
+
+.view {
+    display: none;
+    padding: 20px;
+    min-height: 100vh;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.view.active {
+    display: block;
+    opacity: 1;
+}
+
+.content-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #fff;
+}
+
+h2 {
+    font-size: 1.5em;
+    color: #e91e63;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+/* --- 视图1: 时间轴 (垂直布局) --- */
+.hero-text {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero-text p {
+    color: #ccc;
+    font-size: 1.1em;
+}
+
+.timeline-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.timeline-item {
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.timeline-content {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.timeline-content h3 {
+    color: #e91e63;
+    margin-bottom: 5px;
+}
+
+.timeline-content .date {
+    color: #aaa;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+.photo-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.photo-wrapper img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.photo-wrapper img:hover {
+    transform: scale(1.03);
+}
 
 /* --- 视图2: 情书 --- */
-.letter-container { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; }
-#unlockForm { text-align: center; }
-#unlockForm input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #555; background: rgba(255,255,255,0.1); color: #fff; }
-#unlockBtn { padding: 10px 30px; border: none; border-radius: 20px; background: #e91e63; color: #fff; cursor: pointer; }
-.letter-content { padding: 20px; white-space: pre-wrap; line-height: 1.8; }
+#unlockForm {
+    text-align: center;
+}
 
-/* --- 视图5: 星空下的誓言 (重点优化) --- */
-.constellation-container { text-align: center; }
-.constellation-container h1 { font-family: 'Dancing Script', cursive; font-size: 2em; margin-bottom: 20px; }
-.star-grid {
+#unlockForm input[type="date"] {
+    width: 80%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 1px solid #555;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+#unlockForm button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    background: #e91e63;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+#unlockForm button:hover {
+    background: #c2185b;
+}
+
+#letterContent {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    line-height: 2;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+/* --- 视图3: 未来约定 --- */
+.future-list {
+    list-style: none;
+    padding: 0;
+}
+
+.future-list li {
+    background: rgba(233, 30, 99, 0.1);
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #e91e63;
+    transition: transform 0.3s ease;
+}
+
+.future-list li:hover {
+    transform: translateX(10px);
+}
+
+/* --- 视图4: 默契大考验 --- */
+.options-container button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 1rem;
+    border: 2px solid #ffb6c1;
+    background-color: #fff0f5;
+    color: #333;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.options-container button:hover {
+    background-color: #e91e63;
+    color: white;
+    transform: scale(1.02);
+}
+
+.score-display {
+    font-size: 4em;
+    font-weight: bold;
+    color: #e91e63;
+    margin: 20px 0;
+}
+
+.game-progress {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #888;
+}
+
+/* --- 视图5: 星空下的誓言 (九宫格) --- */
+#star-grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#star-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
-    width: 90%;
-    height: 60vh;
-    max-width: 500px;
-    margin: 0 auto 20px;
-    background: rgba(0,0,0,0.3);
+    gap: 15px;
+    width: 90vw;
+    max-width: 400px;
+    height: 90vw;
+    max-height: 400px;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
-    padding: 10px;
-    position: relative;
+    padding: 15px;
 }
+
 .grid-cell {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
-    position: relative;
     cursor: pointer;
+    position: relative;
     overflow: hidden;
+    transition: background 0.3s ease;
 }
-.grid-cell::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+
+.grid-cell.active {
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 70%);
 }
-.grid-cell.active::before {
-    width: 100px;
-    height: 100px;
-}
+
 .grid-cell.active::after {
     content: '✨';
     position: absolute;
@@ -80,24 +335,86 @@ html, body { width: 100%; height: 100%; overflow-x: hidden; background: #121212;
     transform: translate(-50%, -50%);
     font-size: 1.5em;
 }
-.game-controls { margin: 20px 0; }
-.game-controls button { padding: 12px 30px; border: none; border-radius: 25px; background: linear-gradient(45deg, #e91e63, #9c27b0); color: #fff; cursor: pointer; margin: 0 10px; }
-#gameHint { color: rgba(255,255,255,0.8); margin-top: 10px; }
 
-/* --- 动画与特效 --- */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-/* ... 其他动画 ... */
+#game-hint {
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+#game-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#game-controls button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #e91e63, #9c27b0);
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#game-controls button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+}
 
 /* --- 照片查看器 --- */
-.photo-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
-.viewer-content { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-.viewer-content img { max-width: 90%; max-height: 90%; object-fit: contain; }
-.close-viewer { position: absolute; top: 20px; right: 30px; font-size: 2em; color: #fff; cursor: pointer; }
+.photo-viewer {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    padding-top: 60px;
+}
 
-/* --- 响应式适配 (大屏) --- */
-@media (min-width: 768px) {
-    .mobile-nav { justify-content: center; }
-    .view { max-width: 600px; margin: 0 auto; }
-    /* ... 其他大屏优化 ... */
+.viewer-content {
+    margin: auto;
+    display: block;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+.close-viewer {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close-viewer:hover,
+.close-viewer:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* --- 爱心雨 --- */
+.heart {
+    position: fixed;
+    bottom: -10vh;
+    font-size: 2rem;
+    color: #e91e63;
+    animation: fall linear;
+    z-index: 999;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(-110vh) rotate(360deg);
+    }
 }

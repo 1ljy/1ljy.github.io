@@ -53,6 +53,8 @@
             <a href="#" class="nav-link active" data-target="timeline-view">我们的故事</a>
             <a href="#" class="nav-link" data-target="letter-view">一封情书</a>
             <a href="#" class="nav-link" data-target="future-view">未来约定</a>
+            <a href="#" class="nav-link" data-target="game-view">默契大考验</a>
+            <a href="#" class="nav-link" data-target="constellation-view">星空下的誓言</a>
         </nav>
     </header>
 
@@ -158,6 +160,70 @@
                 </ul>
             </div>
         </section>
+
+        <!-- 视图4: 默契大考验游戏页 -->
+<section id="game-view" class="view">
+    <div class="content-card">
+        <h1>默契大考验 ❤️</h1>
+        <p>看看我们有多了解彼此！</p>
+        
+        <!-- 游戏开始界面 -->
+        <div id="game-start">
+            <p>准备好了吗？</p>
+            <button id="start-game-btn">开始游戏</button>
+        </div>
+
+        <!-- 游戏进行界面 -->
+        <div id="game-play" style="display: none;">
+            <div class="question-container">
+                <h2 id="question-text">问题将在这里显示</h2>
+            </div>
+            <div class="options-container" id="options-container">
+                <!-- 选项将由JS动态生成 -->
+            </div>
+            <div class="game-progress">
+                <span id="progress-text">1 / 5</span>
+            </div>
+        </div>
+
+        <!-- 游戏结果界面 -->
+        <div id="game-result" style="display: none;">
+            <h2>测试完成！</h2>
+            <p>你们的默契值是：</p>
+            <div class="score-display">
+                <span id="score-value">0</span>%
+            </div>
+            <p id="result-message"></p>
+            <button id="restart-game-btn">再玩一次</button>
+        </div>
+    </div>
+</section>
+
+<!-- 视图5: 星空下的誓言 -->
+<section id="constellation-view" class="view">
+    <div class="content-card">
+        <h1>星空下的誓言 ✨</h1>
+        <p>用星辰，画出我们共同的答案。</p>
+        
+        <!-- 游戏画布容器 -->
+        <div id="game-canvas-container">
+            <canvas id="star-canvas"></canvas>
+            <!-- 提示信息 -->
+            <div id="game-hint">
+                <p id="hint-text">点击“开始”，点亮属于我们的第一颗星</p>
+            </div>
+        </div>
+
+        <!-- 游戏控制按钮 -->
+        <div id="game-controls">
+            <button id="start-canvas-btn">开始绘制</button>
+            <button id="check-answer-btn" style="display: none;">提交答案</button>
+            <button id="next-level-btn" style="display: none;">下一题</button>
+        </div>
+    </div>
+</section>
+
+
     </main>
 
     <!-- 全屏照片查看器 -->

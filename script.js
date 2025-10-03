@@ -208,14 +208,26 @@ document.addEventListener('DOMContentLoaded', () => {
         closeBtn.onclick = closeViewer;
         photoViewer.onclick = (e) => { if (e.target === photoViewer) { closeViewer(); } };
 
-        // --- 9. 绑定所有游戏事件监听器 ---
-        // 视图4: 默契大考验
-        document.getElementById('start-game-btn').addEventListener('click', startGame);
-        document.getElementById('restart-game-btn').addEventListener('click', startGame);
-        // 视图5: 星空下的誓言
-        document.getElementById('start-canvas-btn').addEventListener('click', startConstellationGame);
-        document.getElementById('check-answer-btn').addEventListener('click', checkConstellationAnswer);
-        document.getElementById('next-level-btn').addEventListener('click', nextConstellationLevel);
+        // --- 9. 【修改】使用事件委托统一绑定所有游戏按钮 ---
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+
+            // 视图4: 默契大考验
+            if (target.id === 'start-game-btn' || target.id === 'restart-game-btn') {
+                startGame();
+            }
+
+            // 视图5: 星空下的誓言
+            if (target.id === 'start-canvas-btn') {
+                startConstellationGame();
+            }
+            if (target.id === 'check-answer-btn') {
+                checkConstellationAnswer();
+            }
+            if (target.id === 'next-level-btn') {
+                nextConstellationLevel();
+            }
+        });
         
         // 初始化星空画布
         initConstellationCanvas();
@@ -290,7 +302,9 @@ function showResult() {
 }
 
 
-// --- 视图5: 星空下的誓言 - 游戏逻辑 (重构) ---
+// ===================================================================
+// 4. 视图5: 星空下的誓言 - 游戏逻辑 (重构)
+// ===================================================================
 
 // 1. 修改初始化函数，增加引导星星的创建
 function initConstellationCanvas() {
@@ -421,5 +435,90 @@ function nextConstellationLevel() {
     document.getElementById('check-answer-btn').style.display = 'inline-block';
     // 清除旧的引导星星
     document.getElementById('guide-stars-container').innerHTML = '';
+    loadConstellationLevel();
+}
+
+// 8. 【新增】显示消息的函数
+function showConstellationMessage(text, isCorrect) {
+    const hintText = document.getElementById('hint-text');
+    hintText.innerText = text;
+    hintText.style.color = isCorrect ? '#4CAF50' : '#f44336';
+    setTimeout(() => {
+        hintText.innerText = constellationQuestions[constellationLevel].hint;
+        hintText.style.color = 'rgba(255, 255, 255, 0.8)';
+    }, 2000);
+}
+
+// 9. 【新增】显示最终结果的函数
+function showConstellationFinalResult() {
+    document.getElementById('game-hint').innerHTML = '<h2>恭喜你！完成了所有誓言！</h2><p>你用星辰，为我们的故事画上了最美的注脚。</p>';
+}
+
+// 10. 【新增】绘制背景和场景的函数
+function resizeConstellationCanvas() {
+    const container = document.getElementById('game-canvas-container');
+    constellationCanvas.width = container.clientWidth;
+    constellationCanvas.height = container.clientHeight;
+    drawConstellationBackground();
+}
+
+function createBackgroundStars() {
+    backgroundStars = [];
+    for (let i = 0; i < 150; i++) {
+        backgroundStars.push({
+            x: Math.random(),
+            y: Math.random(),
+            size: Math.random() * 2,
+            opacity: Math.random()
+        });
+    }
+}
+
+function drawConstellationBackground() {
+    const gradient = constellationCtx.createRadialGradient(constellationCanvas.width / 2, constellationCanvas.height, 0, constellationCanvas.width / 2, constellationCanvas.height, constellationCanvas.width);
+    gradient.addColorStop(0, '#1b2735');
+    gradient.addColorStop(1, '#090a0f');
+    constellationCtx.fillStyle = gradient;
+    constellationCtx.fillRect(0, 0, constellationCanvas.width, constellationCanvas.height);
+
+    backgroundStars.forEach(star => {
+        constellationCtx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+        constellationCtx.beginPath();
+        constellationCtx.arc(star.x * constellationCanvas.width, star.y * constellationCanvas.height, star.size, 0, Math.PI * 2);
+        constellationCtx.fill();
+    });
+}
+
+function drawConstellationScene() {
+    drawConstellationBackground();
+    constellationUserStars.forEach(star => {
+        drawStar(star.x, star.y, 5, '#FFD700');
+    });
+    if (constellationUserStars.length > 1) {
+        constellationCtx.strokeStyle = 'rgba(255, 215, 0, 0.7)';
+        constellationCtx.lineWidth = 2;
+        constellationCtx.beginPath();
+        constellationCtx.moveTo(constellationUserStars[0].x * constellationCanvas.width, constellationUserStars[0].y * constellationCanvas.height);
+        for (let i = 1; i < constellationUserStars.length; i++) {
+            constellationCtx.lineTo(constellationUserStars[i].x * constellationCanvas.width, constellationUserStars[i].y * constellationCanvas.height);
+        }
+        constellationCtx.stroke();
+    }
+}
+
+function drawStar(x, y, radius, color) {
+    constellationCtx.fillStyle = color;
+    constellationCtx.beginPath();
+    constellationCtx.arc(x * constellationCanvas.width, y * constellationCanvas.height, radius, 0, Math.PI * 2);
+    constellationCtx.fill();
+}
+
+// 11. 【新增】开始游戏的函数
+function startConstellationGame() {
+    constellationLevel = 0;
+    constellationUserStars = [];
+    document.getElementById('start-canvas-btn').style.display = 'none';
+    document.getElementById('check-answer-btn').style.display = 'inline-block';
+    document.getElementById('game-hint').style.display = 'block';
     loadConstellationLevel();
 }

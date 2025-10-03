@@ -39,13 +39,13 @@ const constellationQuestions = [
         question: "我们的爱，如同永恒的...",
         answer: "北斗七星",
         hint: "指引方向，永恒不变",
-        correctSequence: [0, 1, 2, 5, 8, 7, 6] // 0-8代表九宫格从左到右，从上到下
+        correctSequence: [0, 1, 2, 5, 8, 7, 6]
     },
     {
         question: "你是我心中最亮的...",
         answer: "天狼星",
         hint: "夜空中最亮的恒星",
-        correctSequence: [4, 1, 3, 5, 7] // 十字形
+        correctSequence: [4, 1, 3, 5, 7]
     }
 ];
 let constellationLevel = 0;
@@ -61,20 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingMask = document.getElementById('loading-mask');
     const loadingText = document.getElementById('loading-text');
 
+    bgMusic.volume = 0.4;
+
     // --- 核心函数：初始化音乐和页面 ---
     function initMusicAndPage() {
         loadingText.textContent = "正在准备浪漫...";
-        
-        // 尝试播放音乐
         const playPromise = bgMusic.play();
 
         if (playPromise !== undefined) {
             playPromise.then(_ => {
-                // 播放成功！
                 console.log("音乐自动播放成功！");
                 hideLoadingMask();
             }).catch(error => {
-                // 播放失败，显示手动播放按钮
                 console.error("音乐自动播放被阻止:", error);
                 loadingText.innerHTML = `音乐播放失败<br><button id="manual-play-btn">点击播放音乐</button>`;
                 document.getElementById('manual-play-btn').addEventListener('click', () => {
@@ -95,11 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 初始化其他所有功能 ---
     function initOtherFeatures() {
-        // --- 1. 日夜计时器 ---
+        // --- 0. 日夜计时器 ---
         updateDaysAndNights();
-        setInterval(updateDaysAndNights, 1000 * 60 * 60); // 每小时更新一次
+        setInterval(updateDaysAndNights, 1000 * 60 * 60 * 6); // 每6小时更新一次
 
-        // --- 2. 粒子背景配置 ---
+        // --- 1. 粒子背景配置 ---
         if (typeof particlesJS !== 'undefined') {
             particlesJS('particles-js', {
                 particles: { number: { value: 50, density: { enable: true, value_area: 800 } }, color: { value: "#ffffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 }, move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false } },
@@ -108,23 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- 3. 打字机效果 ---
-        function typeWriter(elementId, text, speed = 100) {
+        // --- 2. 打字机效果 ---
+        function typeWriter(elementId, text, speed = 100, callback) {
             const element = document.getElementById(elementId);
             element.innerHTML = '';
             let i = 0;
             function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
+                if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, speed); } else { if (callback) callback(); }
             }
             type();
         }
         typeWriter('typewriter', 'To My Dearest Love,');
 
-        // --- 4. 视图切换 ---
+        // --- 3. 视图切换 ---
         const navLinks = document.querySelectorAll('.nav-link');
         const views = document.querySelectorAll('.view');
         navLinks.forEach(link => {
@@ -138,23 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // --- 5. 滚动触发时间轴动画 ---
+        // --- 4. 滚动触发时间轴动画 ---
+        const timelineItems = document.querySelectorAll('.timeline-item');
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = entry.target.dataset.delay || '0s';
                     entry.target.classList.add('visible');
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
-        document.querySelectorAll('.timeline-item').forEach(item => {
-            item.dataset.delay = `${Math.random() * 0.5}s`;
-            observer.observe(item);
-        });
+        timelineItems.forEach(item => { observer.observe(item); });
 
-        // --- 6. 爱心雨彩蛋 ---
+        // --- 5. 爱心雨彩蛋 ---
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
@@ -165,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => heart.remove(), 5000);
         }
 
-        // --- 7. 信件解锁 ---
-        window.checkBirthday = function() {
+        // --- 6. 信件解锁 (修改事件绑定) ---
+        document.getElementById('unlock-btn').addEventListener('click', () => {
             const input = document.getElementById('birthdayInput').value;
             const herBirthday = "2003-01-04";
             const diffDays = getDaysTogether();
@@ -190,14 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const heartInterval = setInterval(createHeart, 300);
                 const typingSpeed = 50;
                 typeWriter('letter-text', letterText, typingSpeed, () => {
-                    setTimeout(() => { clearInterval(heartInterval); }, 3000);
+                    setTimeout(() => { clearInterval(heartInterval); console.log("信已读完，爱心雨停止。"); }, 3000);
                 });
             } else {
                 alert("哎呀，好像不对哦，再想想看？😉");
             }
-        };
+        });
 
-        // --- 8. 全屏照片查看器 ---
+        // --- 7. 全屏照片查看器 ---
         const photoViewer = document.getElementById('photo-viewer');
         const viewerImg = document.getElementById('viewer-img');
         const closeBtn = document.querySelector('.close-viewer');
@@ -206,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeBtn.onclick = closeViewer;
         photoViewer.onclick = (e) => { if (e.target === photoViewer) { closeViewer(); } };
 
-        // --- 9. 初始化游戏 ---
+        // --- 8. 初始化游戏 ---
         initGames();
     }
 

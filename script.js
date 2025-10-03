@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 初始化其他所有功能 ---
     function initOtherFeatures() {
-        // --- 0. 【新增】日夜计时器 ---
+        // --- 0. 日夜计时器 ---
         updateDaysAndNights();
         setInterval(updateDaysAndNights, 1000 * 60 * 60 * 6); // 每6小时更新一次
 
@@ -176,9 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.checkBirthday = function() {
             const input = document.getElementById('birthdayInput').value;
             const herBirthday = "2003-01-04";
+            const diffDays = getDaysTogether();
             const letterText = `亲爱的，
 
-当你看到这些文字时，我们已经携手走过了1095个日夜。三年，仿佛一瞬，又仿佛一生。我想用这封信，封存我所有说不出口的爱意与感谢。
+当你看到这些文字时，我们已经携手走过了${diffDays}个日夜。三年，仿佛一瞬，又仿佛一生。我想用这封信，封存我所有说不出口的爱意与感谢。
 
 谢谢你，出现在我的生命里，像一道光，照亮了我所有的平凡。和你在一起的每一天，都像是偷来的好时光。我怀念我们第一次见面的紧张，第一次约会的甜蜜，第一次旅行的憧憬...我们在一起的每一个瞬间，都已被我珍藏心底，反复回味。
 
@@ -212,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeBtn.onclick = closeViewer;
         photoViewer.onclick = (e) => { if (e.target === photoViewer) { closeViewer(); } };
 
-        // --- 9. 【修改】使用事件委托统一绑定所有游戏按钮 ---
+        // --- 9. 使用事件委托统一绑定所有游戏按钮 ---
         document.addEventListener('click', (event) => {
             const target = event.target;
 
@@ -307,125 +308,175 @@ function showResult() {
 
 
 // ===================================================================
-// 4. 【新增】日夜计时器功能
+// 4. 日夜计时器功能
 // ===================================================================
 
-function updateDaysAndNights() {
+function getDaysTogether() {
     const startDate = new Date('2022-03-27T00:00:00');
     const now = new Date();
     const diffTime = Math.abs(now - startDate);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}
 
-    // 找到页面上显示日夜的地方并更新
+function updateDaysAndNights() {
+    const diffDays = getDaysTogether();
+
+    // 更新主页面的日夜数
     const heroTexts = document.querySelectorAll('.hero-text p');
     heroTexts.forEach(p => {
-        if (p.textContent.includes('日夜')) {
-            p.textContent = `From ${startDate.toLocaleDateString()} to Forever (已陪伴 ${diffDays} 个日夜)`;
+        if (p.textContent.includes('From')) {
+            p.textContent = `From 2022.03.27 to Forever (已陪伴 ${diffDays} 个日夜)`;
         }
     });
 }
 
 
 // ===================================================================
-// 5. 视图5: 星空下的誓言 - 游戏逻辑 (重构)
+// 5. 视图5: 星空下的誓言 - 游戏逻辑 (彻底重构)
 // ===================================================================
 
-// 1. 修改初始化函数，增加引导星星的创建
+// 1. 修改初始化函数
 function initConstellationCanvas() {
     constellationCanvas = document.getElementById('star-canvas');
     constellationCtx = constellationCanvas.getContext('2d');
     resizeConstellationCanvas();
     window.addEventListener('resize', resizeConstellationCanvas);
     
-    // 【修改】使用 'touchstart' 事件，并增加触摸反馈
-    constellationCanvas.addEventListener('touchstart', handleConstellationTouch, { passive: false });
+    // 同时监听 touchstart 和 mousedown，兼容PC和移动端
+    constellationCanvas.addEventListener('touchstart', handleConstellationInteraction, { passive: false });
+    constellationCanvas.addEventListener('mousedown', handleConstellationInteraction);
     
     createBackgroundStars();
     drawConstellationBackground();
 }
 
-// 2. 【新增】处理触摸事件的函数
-function handleConstellationTouch(event) {
-    // 阻止默认行为，比如页面滚动
-    event.preventDefault(); 
+// 2. 统一的交互处理函数
+function handleConstellationInteraction(event) {
+    event.preventDefault();
     const rect = constellationCanvas.getBoundingClientRect();
-    const touch = event.touches[0];
-    const x = (touch.clientX - rect.left) / constellationCanvas.width;
-    const y = (touch.clientY - rect.top) / constellationCanvas.height;
+    
+    let clientX, clientY;
+    if (event.type === 'touchstart') {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    } else { // mousedown
+        clientX = event.clientX;
+        clientY = event.clientY;
+    }
 
-    // 【新增】创建触摸涟漪效果
-    createTouchRipple(touch.clientX, touch.clientY);
+    createTouchRipple(clientX, clientY);
 
-    // 检查是否点击了已点亮的星星（用于取消）
-    const clickedIndex = constellationUserStars.findIndex(star => 
-        Math.abs(star.x - x) < 0.03 && Math.abs(star.y - y) < 0.03 // 增大点击判定范围
-    );
+    const canvasX = clientX - rect.left;
+    const canvasY = clientY - rect.top;
+
+    const clickRadius = 15;
+    const clickedIndex = constellationUserStars.findIndex(star => {
+        const dx = star.x - canvasX;
+        const dy = star.y - canvasY;
+        return Math.sqrt(dx * dx + dy * dy) < clickRadius;
+    });
 
     if (clickedIndex > -1) {
         constellationUserStars.splice(clickedIndex, 1);
     } else {
-        constellationUserStars.push({ x, y });
+        constellationUserStars.push({ x: canvasX, y: canvasY });
     }
     drawConstellationScene();
 }
 
-// 3. 【新增】创建触摸涟漪效果的函数
+// 3. 修改绘制场景的函数
+function drawConstellationScene() {
+    drawConstellationBackground();
+    constellationUserStars.forEach(star => {
+        drawStarPixel(star.x, star.y, 5, '#FFD700');
+    });
+    if (constellationUserStars.length > 1) {
+        constellationCtx.strokeStyle = 'rgba(255, 215, 0, 0.7)';
+        constellationCtx.lineWidth = 2;
+        constellationCtx.beginPath();
+        constellationCtx.moveTo(constellationUserStars[0].x, constellationUserStars[0].y);
+        for (let i = 1; i < constellationUserStars.length; i++) {
+            constellationCtx.lineTo(constellationUserStars[i].x, constellationUserStars[i].y);
+        }
+        constellationCtx.stroke();
+    }
+}
+
+// 4. 基于像素坐标的星星绘制函数
+function drawStarPixel(x, y, radius, color) {
+    constellationCtx.fillStyle = color;
+    constellationCtx.beginPath();
+    constellationCtx.arc(x, y, radius, 0, Math.PI * 2);
+    constellationCtx.fill();
+}
+
+// 5. 创建触摸涟漪效果的函数
 function createTouchRipple(x, y) {
     const ripple = document.createElement('div');
     ripple.classList.add('touch-ripple');
     ripple.style.left = x + 'px';
     ripple.style.top = y + 'px';
     document.getElementById('game-canvas-container').appendChild(ripple);
-    // 动画结束后移除元素
     setTimeout(() => ripple.remove(), 600);
 }
 
-// 4. 【修改】加载关卡时，显示引导星星
+// 6. 加载关卡时，显示引导星星
 function loadConstellationLevel() {
     constellationUserStars = [];
     const levelData = constellationQuestions[constellationLevel];
     document.getElementById('hint-text').innerText = `问题: ${levelData.question} (${levelData.hint})`;
     
-    // 【新增】显示引导星星
     showGuideStars(levelData.stars);
-    
     drawConstellationScene();
 }
 
-// 5. 【新增】显示引导星星的函数
+// 7. 显示引导星星的函数
 function showGuideStars(stars) {
     const guideContainer = document.getElementById('guide-stars-container');
-    guideContainer.innerHTML = ''; // 清空旧的引导星星
+    guideContainer.innerHTML = '';
 
     const containerRect = document.getElementById('game-canvas-container').getBoundingClientRect();
     
     stars.forEach(star => {
         const guideStarDiv = document.createElement('div');
         guideStarDiv.classList.add('guide-star');
-        // 将百分比坐标转换为绝对像素坐标
         guideStarDiv.style.left = (star.x * containerRect.width) + 'px';
         guideStarDiv.style.top = (star.y * containerRect.height) + 'px';
         guideContainer.appendChild(guideStarDiv);
     });
 }
 
-// 6. 【修改】简化答案校验逻辑
+// 8. 答案校验逻辑
 function checkConstellationAnswer() {
     const levelData = constellationQuestions[constellationLevel];
     const correctStars = levelData.stars;
+    
+    const containerRect = document.getElementById('game-canvas-container').getBoundingClientRect();
+    const correctPixelStars = correctStars.map(star => ({
+        x: star.x * containerRect.width,
+        y: star.y * containerRect.height
+    }));
 
-    if (constellationUserStars.length !== correctStars.length) {
+    if (constellationUserStars.length !== correctPixelStars.length) {
         showConstellationMessage("星星数量不对哦，再试试看！", false);
         return;
     }
-
+    
     let isCorrect = true;
-    // 【修改】使用更宽松的匹配逻辑，只检查点的数量和大致位置是否匹配
-    const tolerance = 0.08; // 增大误差容忍度
-    for (let i = 0; i < constellationUserStars.length; i++) {
-        const userStar = constellationUserStars[i];
-        const correctStar = correctStars[i];
-        if (Math.abs(userStar.x - correctStar.x) > tolerance || Math.abs(userStar.y - correctStar.y) > tolerance) {
+    const tolerance = 30;
+
+    for (let userStar of constellationUserStars) {
+        let foundMatch = false;
+        for (let correctStar of correctPixelStars) {
+            const dx = userStar.x - correctStar.x;
+            const dy = userStar.y - correctStar.y;
+            if (Math.sqrt(dx * dx + dy * dy) < tolerance) {
+                foundMatch = true;
+                break;
+            }
+        }
+        if (!foundMatch) {
             isCorrect = false;
             break;
         }
@@ -439,7 +490,6 @@ function checkConstellationAnswer() {
         }, 1000);
         
         document.getElementById('check-answer-btn').style.display = 'none';
-        // 隐藏引导星星
         document.getElementById('guide-stars-container').innerHTML = '';
 
         if (constellationLevel < constellationQuestions.length - 1) {
@@ -452,17 +502,16 @@ function checkConstellationAnswer() {
     }
 }
 
-// 7. 【修改】进入下一题时，也要清除旧的引导星星
+// 9. 进入下一题
 function nextConstellationLevel() {
     constellationLevel++;
     document.getElementById('next-level-btn').style.display = 'none';
     document.getElementById('check-answer-btn').style.display = 'inline-block';
-    // 清除旧的引导星星
     document.getElementById('guide-stars-container').innerHTML = '';
     loadConstellationLevel();
 }
 
-// 8. 【新增】显示消息的函数
+// 10. 显示消息的函数
 function showConstellationMessage(text, isCorrect) {
     const hintText = document.getElementById('hint-text');
     hintText.innerText = text;
@@ -473,12 +522,12 @@ function showConstellationMessage(text, isCorrect) {
     }, 2000);
 }
 
-// 9. 【新增】显示最终结果的函数
+// 11. 显示最终结果的函数
 function showConstellationFinalResult() {
     document.getElementById('game-hint').innerHTML = '<h2>恭喜你！完成了所有誓言！</h2><p>你用星辰，为我们的故事画上了最美的注脚。</p>';
 }
 
-// 10. 【新增】绘制背景和场景的函数
+// 12. 绘制背景和场景的函数
 function resizeConstellationCanvas() {
     const container = document.getElementById('game-canvas-container');
     constellationCanvas.width = container.clientWidth;
@@ -513,31 +562,7 @@ function drawConstellationBackground() {
     });
 }
 
-function drawConstellationScene() {
-    drawConstellationBackground();
-    constellationUserStars.forEach(star => {
-        drawStar(star.x, star.y, 5, '#FFD700');
-    });
-    if (constellationUserStars.length > 1) {
-        constellationCtx.strokeStyle = 'rgba(255, 215, 0, 0.7)';
-        constellationCtx.lineWidth = 2;
-        constellationCtx.beginPath();
-        constellationCtx.moveTo(constellationUserStars[0].x * constellationCanvas.width, constellationUserStars[0].y * constellationCanvas.height);
-        for (let i = 1; i < constellationUserStars.length; i++) {
-            constellationCtx.lineTo(constellationUserStars[i].x * constellationCanvas.width, constellationUserStars[i].y * constellationCanvas.height);
-        }
-        constellationCtx.stroke();
-    }
-}
-
-function drawStar(x, y, radius, color) {
-    constellationCtx.fillStyle = color;
-    constellationCtx.beginPath();
-    constellationCtx.arc(x * constellationCanvas.width, y * constellationCanvas.height, radius, 0, Math.PI * 2);
-    constellationCtx.fill();
-}
-
-// 11. 【新增】开始游戏的函数
+// 13. 开始游戏的函数
 function startConstellationGame() {
     constellationLevel = 0;
     constellationUserStars = [];

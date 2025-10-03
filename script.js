@@ -213,9 +213,20 @@ document.addEventListener('DOMContentLoaded', () => {
 function startGame() {
     currentQuestionIndex = 0;
     score = 0;
-    document.getElementById('game-start').style.display = 'none';
-    document.getElementById('game-result').style.display = 'none';
-    document.getElementById('game-play').style.display = 'block';
+
+    const startView = document.getElementById('game-start');
+    const playView = document.getElementById('game-play');
+    const resultView = document.getElementById('game-result');
+
+    startView.style.display = 'none';
+    resultView.style.display = 'none';
+    playView.style.display = 'block';
+    
+    // 【关键】为“开始游戏”按钮应用新样式
+    const startBtn = document.getElementById('start-game-btn');
+    startBtn.textContent = '开始游戏'; // 确保文字是中文
+    startBtn.className = 'game-btn'; // 应用新的CSS类
+    
     displayQuestion();
 }
 

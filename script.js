@@ -103,6 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 初始化其他所有功能 ---
     function initOtherFeatures() {
+        // --- 0. 【新增】日夜计时器 ---
+        updateDaysAndNights();
+        setInterval(updateDaysAndNights, 1000 * 60 * 60 * 6); // 每6小时更新一次
+
         // --- 1. 鼠标跟随光晕 ---
         const cursorGlow = document.querySelector('.cursor-glow');
         if (window.matchMedia("(pointer: fine)").matches) {
@@ -303,7 +307,27 @@ function showResult() {
 
 
 // ===================================================================
-// 4. 视图5: 星空下的誓言 - 游戏逻辑 (重构)
+// 4. 【新增】日夜计时器功能
+// ===================================================================
+
+function updateDaysAndNights() {
+    const startDate = new Date('2022-03-27T00:00:00');
+    const now = new Date();
+    const diffTime = Math.abs(now - startDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    // 找到页面上显示日夜的地方并更新
+    const heroTexts = document.querySelectorAll('.hero-text p');
+    heroTexts.forEach(p => {
+        if (p.textContent.includes('日夜')) {
+            p.textContent = `From ${startDate.toLocaleDateString()} to Forever (已陪伴 ${diffDays} 个日夜)`;
+        }
+    });
+}
+
+
+// ===================================================================
+// 5. 视图5: 星空下的誓言 - 游戏逻辑 (重构)
 // ===================================================================
 
 // 1. 修改初始化函数，增加引导星星的创建
